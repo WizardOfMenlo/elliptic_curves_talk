@@ -1,0 +1,270 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usetheme[style=light]{Nord}
+\usefonttheme{professionalfonts}
+\usepackage{amssymb, amsmath}
+\usepackage [lambda,
+advantage,
+operators,
+sets,
+adversary,
+landau,
+probability,
+notions,
+logic,
+ff,
+mm,
+primitives,
+events,
+complexity,
+asymptotics,
+keys]{ cryptocode }
+
+\usepackage{tikz}
+\usepackage{amsfonts}
+\usetikzlibrary{arrows}
+
+\usepackage[style=british]{csquotes}
+
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip1em
+  \hbox{}\nobreak\hfill #1%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}\openautoquote\hspace*{-.7ex}}
+  {\unskip\closeautoquote\vspace*{1mm}\signed{\usebox\mybox}\end{quote}}
+
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+
+
+%Information to be included in the title page:
+\title{Elliptic Curve Cryptography}
+\subtitle{an introduction which is entirely too short}
+\author{Giacomo Fenzi}
+\institute{ETH Zurich}
+\date{6 January 2022}
+
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+    \frametitle{Motivation}
+    \begin{aquote}{Serge Lang}
+    It is possible to write endlessly on elliptic curves. \\ (This is not a threat.)
+    \end{aquote}
+    \begin{itemize}
+        \item 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Outline}
+    \begin{itemize}
+        \item Historical Notes
+        \item Mathematical Background 
+        \item Addition on Elliptic Curves
+        \item Discrete Logarithm and Diffie Hellman
+        \item Pairings
+        \item Isogenies
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{History}
+    Historically originated in the context of solving Diophantine equations such as
+    \[ X^n + Y^n = Z^n, \; \; X,Y,Z \in \ZZ \]
+    or equivalently
+    \[ x^n + y^n = 1, \; \; x, y \in \QQ \]
+    Often very hard, and in general undecidable\footnote{In fact, already undecidable with 11 integers variables!}! 
+
+    Let us see what we can do...
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{History: One variable}
+    \[ a_n x^n + a_{n-1} x^{n-1} + \dots a_1 x + a = 0 \]
+    Quite easy! We can show that:
+    \begin{theorem}
+        Let $\frac{p}{q} \in \QQ$ be a solution of the above equation. 
+        Then $q$ divides $a_n$ and $p$ divides $a_0$.
+    \end{theorem}
+    Check the finite list of candidates.
+
+    Alternatively, solve numerically and find candidate of form $\frac{b}{a_n}$
+\end{frame}
+
+\begin{frame}
+    \frametitle{History: Linear and Quadratic}
+    \[ a x + b y = c \]
+    \begin{theorem}
+        Has infinitely many rational solution. If $\gcd(a, b)$ does not divide $c$, then no integers solutions.
+        Else, infinitely many.
+    \end{theorem}
+    \[ a x^2 + b x y + c y^2  + d x + e y + f = 0 \]
+    These are rational points on a conic. 
+    \begin{itemize}
+        \item Given a rational point, all of them can be found geometrically
+        \item Hasse principle allows us to test if a rational point exists
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{History: Cubics}
+    What about:
+    \[ a x^3 + b x^2 y + c x y^2 + d y^3 + e x^2 + f x y + g y^2 + h x + i y + j = 0 \; ? \]
+    This is the general form of an elliptic curve!
+    We have that 
+    \begin{theorem}[Mordell]
+        If the curve is non singular, and it has a rational point then the group of rational points is finitely generated
+    \end{theorem}
+    But no equivalent of Hasse principle!
+
+    \begin{center}
+        \textbf{Elliptic Curves $\neq$ Ellipse}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Background: Fields}
+    \begin{definition}
+        A field $\FF$ is set together with two operations $+, \cdot$ such that 
+        \begin{itemize}
+            \item $\FF$ is an abelian group under $+$ with identity $0$
+            \item $\FF - \{ 0 \}$ is an abelian group under multiplication with identity $1$.
+            \item For every $a,b,c \in \FF$ we have that $a (b + c) = ab + ac$
+            \item $0 \neq 1$
+        \end{itemize}
+    \end{definition}
+    Informally, we can add, subtract, multiply and divide non zero elements.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Background: Finite Fields}
+    We are mostly interested in finite fields. We have that:
+    \begin{theorem}
+        For every prime $p$, and every $n \in \ZZ^+$ there is an unique field of size $p^n$, which we denote 
+        by either $\mathbb{GF}(p^n)$ or $\FF_{p^n}$
+    \end{theorem}
+
+    If $n = 1$, then $\FF_{p} = \ZZ_p$, if not we can write them as
+    \[ \FF_{p^n} = \frac{\FF_{p}[X]}{(f(x))} \]
+    where $f(x)$ is an irreducible polynomial of degree $n$.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Background: Characteristic}
+    For any field, $\mathrm{char}(\FF)$ is the least integer\footnote{Or $\infty$ if no such integer exists} $\ell$ such that 
+    \[ \underbrace{1 + \dots 1}_{\ell \text{ times}} = 0 \]
+    We have that $\mathrm{char}(\FF_{p^n}) = p$. 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Background: Field Extensions}
+    Let $k, K$ be two fields. If there is an homomorphism $k \to K$, we can identify $k$ with a subfield of $K$. 
+    In that case, $K$ is a \textbf{field extension} of $k$ which we denote by $k \subseteq K$. 
+
+    Given any field $K$ we can construct the algebraic closure $\overbar{K}$ which is the smallest algebraically closed extension containing $K$.
+
+    Some examples:
+    \begin{itemize}
+        \item $\QQ \subseteq \mathbb{R} \subseteq \mathbb{C}$
+        \item $\FF_p \subseteq \FF_{p^2} \subseteq \FF_{p^3} \dots \subseteq \overline{\FF}_{p}$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Weierstrass Form} 
+    \begin{align*}
+        a x^3 + b x^2 y + c x y^2 + d y^3 +& e x^2 + f x y + g y^2 + h x + i y + j = 0 \\
+        &\big\downarrow \\
+        y^2 + a xy + b y &= x^3 + c x^2 + d x + e \\
+        &\bigg\downarrow \; \mathrm{char}(\FF) \neq 2, 3 \\
+        y^2 = x^3 &+ a x + b
+    \end{align*}
+    Much easier to manage!
+\end{frame}
+
+\begin{frame}
+    \frametitle{Elliptic Curves}
+    \begin{definition}
+        Let $\FF$ be a field. An elliptic curve $E$ defined over a field $\FF$ is given by 
+        \[ E: y^2 = x^3 + a x + b \]
+        for $a, b \in \FF$. For any extension $\FF \subseteq \mathbb{E}$ we define
+        \[ E(\mathbb{E}) = \set{(x, y) \in \mathbb{E} \times \mathbb{E} \mid y^2 = x^3 + a x + b } \cup \set{ \infty } \]
+    \end{definition}
+    Mathematicians are often interested with $E(\QQ) \subseteq E(\mathbb{R}) \subseteq E(\mathbb{C})$ but we mostly consider the finite case.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Some elliptic curves}
+    \framesubtitle{(In $E(\mathbb{R})$ since they look better...)}
+    TODO: One singular with cusp, one node and three non singular
+\end{frame}
+
+\begin{frame}
+    \frametitle{Fundamental Quantities}
+    \begin{definition}
+        Let $E: y^2 = x^3 + a x + b$ be an elliptic curve.
+
+        The \textbf{discriminant} of $E$ is 
+            \[ \Delta = -16 (4 a^3 + 27 b^2) \] 
+        A curve is \textbf{singular} if $\Delta = 0$.
+
+        If $E$ is non-singular the $j$\textbf{-invariant} of $E$ is
+            \[ j(E) = -1728 \frac{(4 A)^3}{\Delta} \]
+    \end{definition}
+    \begin{theorem}
+        Let $E, E'$ be two elliptic curves over $K$. Then $E \cong E'$ if and only if $j(E) = j(E')$. 
+    \end{theorem}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Group Law} 
+    TODO: Picture group law
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Group Law: Formulae}
+    Let $E: y^2 = x^3 + a x + b$ be an elliptic curve. Let $P_i = (x_i, y_i) \in E(K)$. Define 
+    \[ -P_0 = (x_0, -y_0 )\]
+    Now, for $P_1 + P_2$: 
+    \begin{itemize}
+        \item If $x_1 = x_2$ and $y_1 = -y_2$, then $P_1 + P_2 = \infty$
+        \item If $P_1 = \infty$ then $P_1 + P_2 = P_2$, and viceversa.
+        \item Let $x_3 = \lambda^2 - x_1 - x_2$, $y_3 = \lambda(x_1 - x_3) - y_1$ where $\lambda$ is defined as:
+        \[ \lambda = \begin{cases}
+            \frac{y_2 - y_1}{x_2 - x_1}, \; x_1 \neq x_2 \\
+            \frac{3 x_1^2 + a}{2y_1},\; \text{otherwise}
+        \end{cases} \]
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{}
+
+    
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Resources}
+    \begin{itemize}
+        \item  J.H. Silverman, The Arithmetic of Elliptic Curves
+        \item  J.H. Silverman, J.T. Tate, Rational Points on Elliptic Curves 
+        \item  D.A. Cox, Primes of the form $x^2 + n y^2$
+        \item  P. Aluffi, Algebra: Chapter 0
+    \end{itemize}
+\end{frame}
+
+
+\end{document}
