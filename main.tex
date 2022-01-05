@@ -38,6 +38,8 @@ keys]{ cryptocode }
 
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 
+\usepackage{tikz}
+\usetikzlibrary{arrows}
 
 %Information to be included in the title page:
 \title{Elliptic Curve Cryptography}
@@ -441,6 +443,7 @@ keys]{ cryptocode }
  
 \end{frame}
 
+\subsection{Isogenies}
 \begin{frame}
     \frametitle{Post Quantum}
     \begin{itemize}
@@ -487,8 +490,9 @@ keys]{ cryptocode }
         \[ \pi: E \to E^{(p^r)}, (x, y) \mapsto \left(x^{p^r}, y^{p^r} \right) \]
         is the $(p^r)$-\textbf{Frobenius isogeny}. Note if $k = \FF_{p^r}$ then $E^{(p^r)} = E$
     \end{definition}
-    If an isogeny factors trough a Frobenius isogeny it is inseparable. We are mostly 
-    concerned with the separable case.
+    If an isogeny factors trough a Frobenius isogeny it is inseparable. 
+    If it is a Frobenius followed by an isomorphisms, it is purely inseparable.
+    We are mostly  concerned with the separable case.
 
 \end{frame}
 
@@ -508,8 +512,34 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{Computing large degree isogenies}
-    For crypto, we want to compute isogeny of large degree i.e. with large kernels.
-    Velu's formulas are too slow.
+    \begin{itemize}
+        \item Velu's formula are too slow for large degree
+        \item Decompose $\ell^k$ isogenies in $k$ $\ell$-isogenies
+        \item Speedup from $\Theta(\ell^k)$ to $\Theta(k^2 \ell)$
+    \end{itemize}
+    Take $H \cong \ZZ_{\ell^k}$. Set $\ker \psi_i = [\ell^{k - i}](\psi_{i-1} \circ \dots \circ \psi_1)(H)$. 
+    Then $\mathrm{deg}(\psi_i) = \ell$ and 
+
+
+    TODO: Insert diagram here
+\end{frame}
+
+\begin{frame}
+    \frametitle{Supersingular Curves}
+    \begin{definition}
+        A curve $E$ defined over $K$ with $\mathrm{char}(K) = p$ is \textbf{supersingular}
+        if $[p]$ is purely inseparable and $j(E) \in \FF_{p^2}$. 
+        A curve that is not supersingular is \textbf{ordinary}
+    \end{definition}
+    \begin{itemize}
+        \item Something something order in a quaternion algebra?
+        \item There are $\approx \lfloor \frac{p}{12} \rfloor$ supersingular curves over $\FF_{p^n}$.
+        \item A supersingular curve has $p + 1$ points.
+        \item Insecure for DLP
+        \item Secure for CSSI (later)!
+    \end{itemize}
+    
+
 \end{frame}
 
 \begin{frame}
@@ -518,7 +548,42 @@ keys]{ cryptocode }
     \begin{theorem}
         Two curves $E_1, E_2$ over a finite field $k$ are isogenous over $k$ if and only if $\#E_1(k) = \#E_2(k)$.
     \end{theorem}
-   Finding the isogeny is dramatically harder 
+   Finding the isogeny is dramatically harder:
+   \begin{definition}
+       The \textbf{computational supersingular isogeny problem} is as follows:
+       Given two supersingular elliptic curves $E, E'$, find an isogeny between them. 
+   \end{definition}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Isogeny Graphs}
+    TODO: Insert picture
+\end{frame}
+
+\begin{frame}
+    \frametitle{Isogeny Graphs}
+    Let $p, \ell$ be a primes.
+    \begin{definition}
+        The $\ell$\textbf{-supersingular isogeny graph} has as:
+        \begin{itemize}
+            \item Vertices: Supersingular Elliptic curves over $\overline{\FF}_p$
+            \item Edges: Separable isogenies from $E \to E'$
+        \end{itemize}
+        Both up to isomorphisms (i.e. vertices are $j$-invariants)
+    \end{definition}
+    \begin{itemize}
+        \item We can represent vertices as elements of $\FF_{p^2}$
+        \item Graph has good mixing properties
+        \item Can walk in the graph with Velu's method
+    \end{itemize} 
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Supersingular Isogeny Diffie Hellman}
+    
+    
+
 \end{frame}
 
 \section{Conclusion}
@@ -526,10 +591,12 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Resources}
     \begin{itemize}
-        \item  J.H. Silverman, The Arithmetic of Elliptic Curves
         \item  J.H. Silverman, J.T. Tate, Rational Points on Elliptic Curves 
+        \item  J.H. Silverman, The Arithmetic of Elliptic Curves\footnote{The bible}
         \item  D.A. Cox, Primes of the form $x^2 + n y^2$
         \item L. Panny, notes: \href{https://yx7.cc/docs/misc/isog_bristol_notes.pdf}{[intro]} \href{https://yx7.cc/docs/misc/isogprob_bristol_notes.pdf}{[isogenies problems]}
+        \item C. Costello, \href{https://eprint.iacr.org/2019/1321.pdf}{Supersingular isogeny key exchange for beginners}
+        \item R. Granger, A. Joux, Computing Discrete Logarithms [5.2, 5.3]
     \end{itemize}
 \end{frame}
 
