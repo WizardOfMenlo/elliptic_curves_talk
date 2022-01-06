@@ -143,7 +143,7 @@ keys]{ cryptocode }
     or equivalently
     \[ x^n + y^n = 1, \; \; x, y \in \QQ \]
     \pause
-    Often very hard, and in general undecidable\footnote{In fact, already undecidable with 11 integers variables!}! 
+    Often very hard, and in general undecidable! 
 
     Let us see what we can do...
 
@@ -234,8 +234,9 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{Characteristic}
-    For any field, $\mathrm{char}(\FF)$ is the least integer\footnote{Or $\infty$ if no such integer exists} $\ell$ such that 
-    \[ \underbrace{1 + \dots 1}_{\ell \text{ times}} = 0 \]
+    For any field, $\mathrm{char}(\FF)$ is the least integer $\ell$ such that 
+    \[ \underbrace{1 + \dots 1}_{\ell \text{ times}} = 0, \]
+    or $\infty$ if no such integer exists.
     We have that $\mathrm{char}(\FF_{p^n}) = p$. 
 \end{frame}
 
@@ -510,7 +511,7 @@ keys]{ cryptocode }
     \onslide<4->{
     Pairings make DDH easy on elliptic curves!}
     \onslide<5->{
-    \[ \mathrm{DDH} \leq_R \mathrm{CDH} \leq_R\footnote{In fact equivalent in certain groups} \mathrm{DLP} \]}
+    \[ \mathrm{DDH} \leq_R \mathrm{CDH} \leq_R \mathrm{DLP} \]}
 
     \onslide<6->{
     \textbf{Representation matters}! $\ZZ_{p-1} \cong \ZZ^*_p$ as groups but the discrete logarithm is trivial in the former, assumed hard in the latter. }
@@ -531,8 +532,8 @@ keys]{ cryptocode }
     \textbf{Best known attacks against ECC are generic attacks}
     \pause
     \begin{itemize}
-        \item Shorter keysizes ($\approx 256$ vs\footnote{For 128 bits of security} 3072 bits)
-        \item Faster computation\footnote{against other DLP schemes and private RSA ops}
+        \item Shorter keysizes ($\approx 256$ vs 3072 bits)
+        \item Faster computation
     \end{itemize}
 \end{frame}
 
@@ -558,7 +559,7 @@ keys]{ cryptocode }
     \frametitle{Easy Elliptic Curves}
     \textbf{DLP is not equally hard on every curve}!
     \begin{itemize}
-        \item<1-> Singular curves over $\FF_p$. Equivalent to DLP in\footnote{Or in some small extension} $\FF_p^*$ or $\FF_p^+$
+        \item<1-> Singular curves over $\FF_p$. Equivalent to DLP in $\FF_p^*$ or $\FF_p^+$
         \item<2-> Curves and subgroups with small embedding degree. E.g. supersingular and anomalous curves
         \item<3-> Curves that admit pairings to small finite fields.
         \item<4-> Curves defined over $\FF_{p^k}$ for $k$ with small factors. GHS Method, Diem's Analysis.
@@ -626,7 +627,7 @@ keys]{ cryptocode }
         \langle \cdot , \cdot \rangle : E[m] &\times E[m] \to \mu_m \\
         \langle P, Q \rangle &= e_m(S, \phi(Q))
     \end{align*}
-    For $\phi: E \to E$ a distorsion map\footnote{If it exists}
+    For $\phi: E \to E$ a distorsion map
 
 \end{frame}
 
@@ -939,8 +940,8 @@ Details will follow
     \pause
     To find a `golden' one we use the van Oorschot Wiener (vOW) algorithm. 
     \pause
-    When using $m$ processors and $w$ memory cells, time complexity\footnote{In terms of $\ell^k$-isogeny computations} is 
-    \[ \frac{2.5}{m}\sqrt{\#S^3/w} = O(p^{3/8})  \]
+    When using $m$ processors and $w$ memory cells, time complexity is 
+    \[ \frac{2.5}{m}\sqrt{\#S^3/w}\cdot t = O(p^{3/8})  \]
 \end{frame}
 
 \section{Conclusion}
