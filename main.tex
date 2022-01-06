@@ -26,6 +26,13 @@ keys]{ cryptocode }
 \usepackage{amsfonts}
 
 \usepackage[style=british]{csquotes}
+\usepackage{graphicx}
+\graphicspath{ {./img/} }
+
+\usepackage{pgfplots}
+    \pgfplotsset{
+        compat=1.12,
+    }
 
 \def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip1em
   \hbox{}\nobreak\hfill #1%
@@ -39,7 +46,9 @@ keys]{ cryptocode }
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 
 \usepackage{tikz}
+\usetikzlibrary{positioning}
 \usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
 
 %Information to be included in the title page:
 \title{Elliptic Curve Cryptography}
@@ -62,6 +71,7 @@ keys]{ cryptocode }
 
     \begin{itemize}
         \item Elliptic curves are everywhere in cryptography
+        \item Power $\approx 70\%$ of TLS Exchanges
         \item Coolest post quantum cryptography proposal
         \item Maths is banging
     \end{itemize}
@@ -203,12 +213,68 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Elliptic Curves}
     \begin{definition}
-        Let $\FF$ be a field. An elliptic curve $E$ defined over a field $\FF$ (denoted by $E/\FF$) is given by 
+        Let $k$ be a field. An elliptic curve $E$ defined over $k$ (denoted by $E/k$) is given by 
         \[ E: y^2 = x^3 + a x + b \]
-        for $a, b \in \FF$. For any extension $\FF \subseteq \mathbb{E}$ we define
-        \[ E(\mathbb{E}) = \set{(x, y) \in \mathbb{E} \times \mathbb{E} \mid y^2 = x^3 + a x + b } \cup \set{ \infty } \]
+        for $a, b \in k$. For any extension $k\subseteq K$ we define
+        \[ E(K) = \set{(x, y) \in K \times K \mid y^2 = x^3 + a x + b } \cup \set{ \infty } \]
     \end{definition}
     Mathematicians are often interested with $E(\QQ) \subseteq E(\mathbb{R}) \subseteq E(\mathbb{C})$ but we mostly consider the finite case.
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Elliptic curves}
+    \begin{center}
+        
+    \begin{tikzpicture}[thick,>=latex]
+    % Curve over R
+
+    % Requires GNUplot installation (part of TeXLive)
+    \begin{scope}[scale=.75]
+      \draw[<->,gray] (-3,0) -- (3,0) node[right] {$x \in \mathbb{R}$};
+      \draw[<->,gray] (0,-3) -- (0,3) node[above] {$y \in \mathbb{R}$};
+      \draw[thick, name path=curve, every plot/.style={smooth}] plot[id=curve-21, raw gnuplot] function {
+        f(x,y) = y**2 - x**3 + 2*x - 1;
+        set xrange [-3:3];
+        set yrange [-3:3];
+        set view 0,0;
+        set isosample 50,50;
+        set cont base;
+        set cntrparam levels incre 0,0.1,0;
+        unset surface;
+        splot f(x,y);
+      };
+
+    \end{scope}
+
+    \node at (0,-3) {$y^2 = x^3 - 2 x + 1$ over $\mathbb{R}$};
+    
+    % Curve over Z_p
+
+    % Generate list of points with Sage:
+    % E = EllipticCurve(GF(89), [-2,1])
+    % E.order()
+    % print [(P[0],P[1]) for P in E]
+    \begin{scope}[xshift=5cm, scale=.045]
+      \draw[|<->|,gray] (0,-44) -- (0,44) node[above] {$y \in \mathbb{Z}_{89}$};
+      \draw[->|,gray] (0,0) -- (89,0) node[right] {$x \in \mathbb{Z}_{89}$};
+      \foreach \point in {
+        (0, 1), (0, 1), (0, -1), (1, 0), (2, 19), (2, -19), (3, 17), (3, -17), (4, 18), (4, -18), (9, 0),
+        (10, 25), (10, -25), (11, 8), (11, -8), (13, 6), (13, -6), (14, 15), (14, -15), (15, 26), (15, -26),
+        (20, 29), (20, -29), (21, 26), (21, -26), (23, 14), (23, -14), (24, 31), (24, -31), (25, 1), (25, -1), (26, 9), (26, -9), (27, 36), (27, -36),
+        (31, 2), (31, -2), (32, 24), (32, -24), (33, 19), (33, -19), (39, 18), (39, -18),
+        (43, 37), (43, -37), (45, 16), (45, -16), (46, 18), (46, -18), (47, 32), (47, -32), (49, 28), (49, -28),
+        (50, 37), (50, -37), (53, 26), (53, -26), (54, 19), (54, -19), (57, 7), (57, -7), (58, 40), (58, -40),
+        (61, 34), (61, -34), (63, 30), (63, -30), (64, 1), (64, -1), (65, 38), (65, -38), (66, 42), (66, -42),
+        (71, 41), (71, -41), (72, 27), (72, -27), (75, 20), (75, -20), (76, 12), (76, -12), (79, 0),
+        (80, 25), (80, -25), (81, 22), (81, -22), (83, 8), (83, -8), (84, 8), (84, -8), (85, 37), (85, -37), (86, 43), (86, -43), (88, 25), (88, -25)
+      } {\node at \point {$\bullet$};}
+    \end{scope}
+
+    \node[right] at (5,-3) {$y^2 = x^3 - 2 x + 1$ over $\mathbb{Z}_{89}$}; % order: 96
+
+  \end{tikzpicture}
+\end{center}
 \end{frame}
 
 \begin{frame}
@@ -225,13 +291,27 @@ keys]{ cryptocode }
         The \textbf{discriminant} of $E$ is 
             \[ \Delta = -16 (4 a^3 + 27 b^2) \] 
         A curve is \textbf{singular} if $\Delta = 0$.
+   \end{definition}
+    Alternatively, let $E: y^2 = f(x)$, and let $x_1, x_2, x_3$ be the roots of $f$. 
+    \[ \Delta = (x_1 - x_2)^2(x_2 - x_3)^2(x_3 - x_1)^2 \]
+    i.e. $\Delta = 0 \iff f$ has a repeated root.
 
-        If $E$ is non-singular the $j$\textbf{-invariant} of $E$ is
+    For now on, all curves are assumed non singular.
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{$j$-invariant}
+    \begin{definition}
+         The $j$\textbf{-invariant} of $E$ is
             \[ j(E) = -1728 \frac{(4 A)^3}{\Delta} \]
-    \end{definition}
-    \begin{theorem}
-        Let $E, E'$ be two elliptic curves over $K$. Then $E \cong E'$ if and only if $j(E) = j(E')$. 
-    \end{theorem}
+    \end{definition} 
+    In fact, an isomorphisms from a curve in short Weierstrass form must necessarily be:
+    \[ (x, y) \mapsto (u^2 x, u^3 y) \]
+    for $u \in \overbar{K}^*$ and this yields:
+     \begin{theorem}
+        Let $E, E'$ be two elliptic curves over $K$. Then $E \cong E'$ over $\overbar{K}$ if and only if $j(E) = j(E')$. 
+    \end{theorem}  
 \end{frame}
 
 \begin{frame}
@@ -356,9 +436,11 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Pollard Rho}
     Collision search for $f: S \to S$. Let $x_0 \in S$, $x_n = f(x_{n-1})$.
-    TODO: Insert image
     
     Expected $\sqrt{\pi \#S/2}$ calls to $f$, constant memory.
+    \begin{center}
+        \includegraphics[width=25em]{pollard_rho.PNG}
+    \end{center}
 \end{frame}
 
 \begin{frame}
@@ -520,8 +602,23 @@ keys]{ cryptocode }
     Take $H \cong \ZZ_{\ell^k}$. Set $\ker \psi_i = [\ell^{k - i}](\psi_{i-1} \circ \dots \circ \psi_1)(H)$. 
     Then $\mathrm{deg}(\psi_i) = \ell$ and 
 
+    \begin{center}
+        \begin{tikzpicture}
+  \node (e) {$E$};
+  \node (e1) [right=1 of e] {$E_1$};
+  \node (dots) [right=1 of e1] {$\dots$};
+  \node (ek1) [right=1 of dots] {$E_{k-1}$};
+  \node (ek) [right=1 of ek1] {$E/H$};
+  \draw[->] (e) to node [above] {$\psi_1$} (e1);
+  \draw[->] (e1) to node [above] {$\psi_2$} (dots);
+  \draw[->] (dots) to node [above] {$\psi_{k-1}$} (ek1);
+  \draw[->] (ek1) to node [above] {$\psi_k$} (ek);
+  \draw [->] (e) to [out=60,in=120]  (ek);
+            
+        \end{tikzpicture}
+    \end{center}
+    
 
-    TODO: Insert diagram here
 \end{frame}
 
 \begin{frame}
@@ -573,20 +670,103 @@ keys]{ cryptocode }
     \end{definition}
     \begin{itemize}
         \item We can represent vertices as elements of $\FF_{p^2}$
+        \item Graph is directed
         \item Graph has good mixing properties
         \item Can walk in the graph with Velu's method
+        \item Most vertices have degree $\ell + 1$
     \end{itemize} 
 
 \end{frame}
 
 \begin{frame}
-    \frametitle{Supersingular Isogeny Diffie Hellman}
+    \frametitle{SIDH} 
+    TODO: Picture
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{SIDH}
+    Picture to keep in mind:
+\begin{center}
+    \begin{tikzpicture}
+  \node (e) {$E$};
+  \node (ea) [right=4 of e] {$E_A$};
+  \node (eb) [below=2 of e] {$E_B$};
+  \node (eab) [below=2 of ea] {$E_{AB} \cong E_{BA}$};
+  \draw[->] (e) to node [above] {$\phi_A$} (ea);
+  \draw[->] (e) to node [left] {$\phi_B$} (eb);
+  \draw[->] (ea) to node [right] {$\phi'_B$} (eab);
+  \draw[->] (eb) to node [below] {$\phi'_A$} (eab);
+\end{tikzpicture}
+\end{center}
+Details will follow
+\end{frame}
+
+\begin{frame}
+    \frametitle{SIDH}
+    Parties select $p = 2^{e_A} 3^{e_B} - 1$ prime, a supersingular starting curve $E/\overline{\FF}_{p^2}$, four points $P_A, P_B, Q_A, Q_B$ s.t.
+    $\langle P_A, Q_A \rangle = E[2^{e_A}], \langle P_B, Q_B \rangle = E[3^{e_B}]$.
+    \begin{itemize}
+        \item Alice, Bob sample $n_A \sample \ZZ_{2^{e_A}}, n_B \sample \ZZ_{3^{e_B}}$, and compute $S_{X} = P_X + [n_X]Q_X$
+        \item Alice computes the $2^{e_A}$ isogeny $\phi_A: E \to E/\langle S_A\rangle = E_A$
+        \item Bob computes the $3^{e_B}$ isogeny $\phi_B: E \to E/\langle S_B\rangle = E_B$
+        \item The public keys are $\mathrm{pk}_X = \left(E_X, P_X' = \phi_X(P_X), Q_X' = \phi_X(Q_X)\right)$
+        \item Alice computes $S'_A = P'_B + [n_A] Q'_B$, and an isogeny $\phi'_A : E_B \to E/\langle S'_A \rangle = E_{AB}$
+        \item Bob computes $S'_B = P'_A + [n_B] Q'_A$, and an isogeny $\phi'_B : E_A \to E/\langle S'_B \rangle = E_{BA}$
+        \item The final secret is $j(E_{AB}) = j(E_{BA})$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{SIDH and SIKE}
+    \begin{itemize}
+        \item SIDH is vulnerable to active attacks
+        \item SIKE uses the Fujisaki-Okamoto transform to fix this 
+        \item SIKE in the Alternate Candidates of Round 3 of the NIST PQC competion
+        \item Very short keys
+        \item Currently slower than most other schemes
+        \item Best known attack is classical
+    \end{itemize} 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Security}
+    Best attack is on CSSI problem. Suppose we want to find an $\ell^a$-isogeny  between $E_0 \to E_1$, both 
+    supersingular over $\overbar{\FF}_p$. Let $k \approx a/2$ and
+    \begin{align*}
+        S_{i, k} &\coloneqq \set{ H \leq E_i[\ell^k] \mid \; H \text{ cyclic}, |H| = \ell^k } \\
+        S &\coloneqq \left( \set{0} \times S_{0, k} \right) \sqcup \left( \set{1} \times S_{1, k} \right) \\
+        g: S &\to \FF_{p^2}, \; (i, H) \mapsto j(E_{i}/H)
+    \end{align*}
+    A collision $g(0, H) = g(1, H')$ will solve the isogeny problem. To allow for Pollard-Rho style methods, let $h: \FF_{p^2} \to S$ 
+    be a hash function, and let:
+    \[ f: S \to S,\; f \coloneqq h \circ g \]
+\end{frame}
+
+\begin{frame}
+    \frametitle{Security}
+    $h$ maps a set $\approx p/12$ to $S$ which has size $\approx p^{1/4}$ so introduces a lot of collisions.
+    To find a `golden' one we use the van Oorschot Wiener (vOW) algorithm. 
+    When using $m$ processors and $w$ memory cells, time complexity\footnote{In terms of $\ell^k$-isogeny computations} is 
+    \[ \frac{2.5}{m}\sqrt{\#S^3/w} = O(p^{3/8})  \]
     
+    TODO: Add image
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+    \frametitle{Conclusion}
+    \begin{itemize}
+        \item Elliptic curves are pretty damn cool
+        \item We only scratched the surface!
+        \item Elliptic Curve Diffie Hellman base of most of web key exchanges
+        \item BLS Pairing based signatures both efficient and secure
+        \item SIKE leverages isogenies for post quantum security
+    \end{itemize}
     
 
 \end{frame}
 
-\section{Conclusion}
 
 \begin{frame}
     \frametitle{Resources}
