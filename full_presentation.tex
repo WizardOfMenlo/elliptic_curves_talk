@@ -113,24 +113,24 @@ keys]{ cryptocode }
     \begin{aquote}{Serge Lang}
     It is possible to write endlessly on elliptic curves. \\ (This is not a threat.)
     \end{aquote}
-    
+    \pause
     \begin{itemize}
-        \item Elliptic curves are everywhere in cryptography
-        \item Power $\approx 70\%$ of TLS Exchanges
-        \item Coolest post quantum cryptography proposal
-        \item Fascinating mathematically
+        \item<2-> Elliptic curves are everywhere in cryptography
+        \item<3-> Power $\approx 70\%$ of TLS Exchanges
+        \item<4-> Coolest post quantum cryptography proposal
+        \item<5-> Fascinating mathematically
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Outline}
     \begin{itemize}
-        \item Historical Notes
-        \item Mathematical Background 
-        \item Addition on Elliptic Curves
-        \item Discrete Logarithm and Diffie Hellman
-        \item Pairings
-        \item Isogenies
+        \item<1-> Historical Notes
+        \item<2-> Mathematical Background 
+        \item<3-> Addition on Elliptic Curves
+        \item<4-> Discrete Logarithm and Diffie Hellman
+        \item<5-> Pairings
+        \item<6-> Isogenies
     \end{itemize}
 \end{frame}
 \section{History}
@@ -139,10 +139,10 @@ keys]{ cryptocode }
     \frametitle{Diophantine Equations}
     Historically originated in the context of solving Diophantine equations such as
     \[ X^n + Y^n = Z^n, \; \; X,Y,Z \in \ZZ \]
-    
+    \pause
     or equivalently
     \[ x^n + y^n = 1, \; \; x, y \in \QQ \]
-    
+    \pause
     Often very hard, and in general undecidable\footnote{In fact, already undecidable with 11 integers variables!}! 
 
     Let us see what we can do...
@@ -152,13 +152,13 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{One variable}
     \[ a_n x^n + a_{n-1} x^{n-1} + \dots a_1 x + a = 0 \]
-    
+    \pause
     Quite easy! We can show that:
     \begin{theorem}
         Let $\frac{p}{q} \in \QQ$ be a solution of the above equation. 
         Then $q$ divides $a_n$ and $p$ divides $a_0$.
     \end{theorem}
-    
+    \pause
     Check the finite list of candidates.
 
     Alternatively, solve numerically and find candidate of form $\frac{b}{a_n}$
@@ -167,14 +167,14 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Linear and Quadratic}
     \[ a x + b y = c \]
-    
+    \pause
     \begin{theorem}
         Has infinitely many rational solution. If $\gcd(a, b)$ does not divide $c$, then no integers solutions.
         Else, infinitely many.
     \end{theorem}
-    
+    \pause
     \[ a x^2 + b x y + c y^2  + d x + e y + f = 0 \]
-    
+    \pause
     These are rational points on a conic. 
     \begin{itemize}
         \item Given a rational point, all of them can be found geometrically
@@ -187,16 +187,16 @@ keys]{ cryptocode }
     \frametitle{Cubics}
     What about:
     \[ a x^3 + b x^2 y + c x y^2 + d y^3 + e x^2 + f x y + g y^2 + h x + i y + j = 0 \; ? \]
-    
+    \pause
     This is the general form of an elliptic curve!
-    
+    \pause
     We have that 
     \begin{theorem}[Mordell]
         If the curve is non singular, and it has a rational point then the group of rational points is finitely generated
     \end{theorem}
-    
+    \pause
     But no equivalent of Hasse principle!
-    
+    \pause
     \begin{center}
         \textbf{Elliptic Curves $\neq$ Ellipse}
     \end{center}
@@ -214,7 +214,7 @@ keys]{ cryptocode }
             \item $0 \neq 1$
         \end{itemize}
     \end{definition}
-    
+    \pause
     Informally, we can add, subtract, multiply and divide non zero elements.
 \end{frame}
 
@@ -225,7 +225,7 @@ keys]{ cryptocode }
         For every prime $p$, and every $n \in \ZZ^+$ there is an unique field of size $p^n$, which we denote 
         by either $\mathbb{GF}(p^n)$ or $\FF_{p^n}$
     \end{theorem}
-    
+    \pause
     
     If $n = 1$, then $\FF_{p} = \ZZ_p$, if not we can write them as
     \[ \FF_{p^n} = \frac{\FF_{p}[X]}{(f(x))} \]
@@ -244,13 +244,13 @@ keys]{ cryptocode }
     Let $k, K$ be two fields. If there is an homomorphism $k \to K$, we can identify $k$ with a subfield of $K$. 
     In that case, $K$ is a \textbf{field extension} of $k$ which we denote by $k \subseteq K$. 
     
-    
+    \pause
     Given any field $K$ we can construct the algebraic closure $\overbar{K}$ which is the smallest algebraically closed extension containing $K$.
 
     Some examples:
     \begin{itemize}
-        \item $\QQ \subseteq \mathbb{R} \subseteq \mathbb{C}$
-        \item $\FF_p \subseteq \FF_{p^2} \subseteq \FF_{p^3} \dots \subseteq \overline{\FF}_{p}$
+        \item<1-> $\QQ \subseteq \mathbb{R} \subseteq \mathbb{C}$
+        \item<2-> $\FF_p \subseteq \FF_{p^2} \subseteq \FF_{p^3} \dots \subseteq \overline{\FF}_{p}$
     \end{itemize}
 \end{frame}
 
@@ -260,12 +260,12 @@ keys]{ cryptocode }
     \frametitle{Weierstrass Form} 
     \begin{align*}
         a x^3 + b x^2 y + c x y^2 + d y^3 +& e x^2 + f x y + g y^2 + h x + i y + j = 0 \\
-        &\big\downarrow \\
-        y^2 + a xy + b y &= x^3 + c x^2 + d x + e \\
-        &\bigg\downarrow \; \mathrm{char}(K) \neq 2, 3 \\
-        y^2 = x^3 &+ a x + b
+        &\disponslide{2-}{\big\downarrow} \\
+        \disponslide{2-}{y^2 + a xy + b y} & \disponslide{2-}{= x^3 + c x^2 + d x + e} \\
+        &\disponslide{3-}{\bigg\downarrow \; \mathrm{char}(K) \neq 2, 3} \\
+        \disponslide{3-}{y^2 = x^3 }&\disponslide{3-}{+ a x + b}
     \end{align*}
-    Much easier to manage!
+    \onslide{4-}{Much easier to manage!}
 \end{frame}
 
 \begin{frame}
@@ -274,11 +274,11 @@ keys]{ cryptocode }
         Let $k$ be a field. An elliptic curve $E$ over $k$ (denoted by $E/k$) is given by 
         \[ E: y^2 = x^3 + a x + b \]
         for $a, b \in k$. 
-        
+        \pause
         For any extension $k\subseteq K$ we define
         \[ E(K) = \set{(x, y) \in K \times K \mid y^2 = x^3 + a x + b } \cup \set{ \infty } \]
     \end{definition}
-    
+    \pause
     Mathematicians are often interested with $E(\QQ) \subseteq E(\mathbb{R}) \subseteq E(\mathbb{C})$ but we mostly consider the finite case.
 \end{frame}
 
@@ -310,7 +310,7 @@ keys]{ cryptocode }
 
     \node at (0,-3) {$y^2 = x^3 - 2 x + 1$ over $\mathbb{R}$};
     
-    
+    \pause
     % Curve over Z_p
 
     % Generate list of points with Sage:
@@ -400,12 +400,12 @@ keys]{ cryptocode }
             \[ \Delta = -16 (4 a^3 + 27 b^2) \] 
         A curve is \textbf{singular} if $\Delta = 0$.
    \end{definition}
-   
+   \pause
     Alternatively, let $E: y^2 = f(x)$, and let $x_1, x_2, x_3$ be the roots of $f$. 
     \[ \Delta = (x_1 - x_2)^2(x_2 - x_3)^2(x_3 - x_1)^2 \]
     i.e. $\Delta = 0 \iff f$ has a repeated root.
 
-    
+    \pause
     From now on, all curves are assumed non singular.
     
 \end{frame}
@@ -416,11 +416,11 @@ keys]{ cryptocode }
          The $j$\textbf{-invariant} of $E$ is
             \[ j(E) = -1728 \frac{(4 A)^3}{\Delta} \]
     \end{definition} 
-    
+    \pause
     In fact, an isomorphism from a curve in short Weierstrass form must necessarily be:
     \[ (x, y) \mapsto (u^2 x, u^3 y) \]
     for $u \in \overbar{K}^*$ 
-     
+    \pause 
     and this yields:
      \begin{theorem}
         Let $E, E'$ be two elliptic curves over $K$. Then $E \cong E'$ over $\overbar{K}$ if and only if $j(E) = j(E')$. 
@@ -437,33 +437,33 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{The Group Law: Formulae}
     Let $E: y^2 = x^3 + a x + b$ be an elliptic curve. Let $P_i = (x_i, y_i) \in E(K)$. 
-    
+    \pause
     Define 
     \[ -P_0 = (x_0, -y_0 )\]
-    
+    \pause
     Now, for $P_1 + P_2$: 
     \begin{itemize}
-        \item If $x_1 = x_2$ and $y_1 = -y_2$, then $P_1 + P_2 = \infty$
-        \item If $P_1 = \infty$ then $P_1 + P_2 = P_2$, and viceversa.
-        \item Let $x_3 = \lambda^2 - x_1 - x_2$, $y_3 = \lambda(x_1 - x_3) - y_1$ where $\lambda$ is:
+        \item<4-> If $x_1 = x_2$ and $y_1 = -y_2$, then $P_1 + P_2 = \infty$
+        \item<5-> If $P_1 = \infty$ then $P_1 + P_2 = P_2$, and viceversa.
+        \item<6-> Let $x_3 = \lambda^2 - x_1 - x_2$, $y_3 = \lambda(x_1 - x_3) - y_1$ where $\lambda$ is:
         \[ \lambda = \begin{cases}
             \frac{y_2 - y_1}{x_2 - x_1}, \; x_1 \neq x_2 \\
             \frac{3 x_1^2 + a}{2y_1},\; \text{otherwise}
         \end{cases} \]
     \end{itemize}
-    
-    This makes $E$ into an abelian group with identity $\infty$
+    \onslide<7->{
+    This makes $E$ into an abelian group with identity $\infty$}
 \end{frame}
 
 \begin{frame}
     \frametitle{Scalar multiplication}
     For $n > 0, P \in E$ we write $[n]P = \underbrace{P + \dots + P}_{n \text{ times}}$. We then extend the notation by letting $[0]P = \infty$ and 
     $[-n]P = [n](-P)$. \\
-    
+    \pause
 
     We can compute $[n]P$ in $\Theta(\log n)$ group operations using double and add.
     
-    
+    \pause
     For $m \in \ZZ$ we define a map $[m]: E \to E$ accordingly, and write:
     \[ E[m] \coloneqq \ker[m] \]
     to be the $m$-\textbf{torsion subgroup} of $E$.
@@ -472,12 +472,12 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Number of Points on a curve}
     Heuristically, we expect $\approx q + 1$ points
-    
+    \pause
     \begin{theorem}[Hasse]
         Let $E$ be an elliptic curve defined over $\FF_q$.
         \[ \left|\#E(\FF_q) - q - 1\right| \leq 2 \sqrt{q} \] 
     \end{theorem}
-    
+    \pause
     Exact value can be efficiently found using Schoof's algorithm in $O((\log q)^8)$.
 \end{frame}
 
@@ -486,7 +486,7 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Discrete Logarithm}
     Cryptography relies on hardness assumptions. 
-    
+    \pause
     \begin{definition}
         Let $\mathrm{Gen}(\secparam)$ be a p.p.t. algorithm that returns a group description $\GG = (+, P, q)$, where $\GG = \langle P \rangle$ and $q = \#\GG$.
         For an attacker $\adv$, define 
@@ -502,23 +502,23 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Related Assumptions}
     In practice, we make stronger assumptions, such as Computational Diffie Hellman and Decisional Diffie Hellman. 
-    
+    \pause
     \begin{itemize}
-        \item CHD: From $[x]P, [y]P$ compute $[xy]P$
-        \item DDH: Distinguish $(P, [x]P, [y]P, [xy]P)$ from $(P, [x]P, [y]P, [z]P)$
+        \item<2-> CHD: From $[x]P, [y]P$ compute $[xy]P$
+        \item<3-> DDH: Distinguish $(P, [x]P, [y]P, [xy]P)$ from $(P, [x]P, [y]P, [z]P)$
     \end{itemize}
-    
-    Pairings make DDH easy on elliptic curves!
+    \onslide<4->{
+    Pairings make DDH easy on elliptic curves!}
+    \onslide<5->{
+    \[ \mathrm{DDH} \leq_R \mathrm{CDH} \leq_R\footnote{In fact equivalent in certain groups} \mathrm{DLP} \]}
 
-    \[ \mathrm{DDH} \leq_R \mathrm{CDH} \leq_R\footnote{In fact equivalent in certain groups} \mathrm{DLP} \]
-
-
-    \textbf{Representation matters}! $\ZZ_{p-1} \cong \ZZ^*_p$ as groups but the discrete logarithm is trivial in the former, assumed hard in the latter. 
+    \onslide<6->{
+    \textbf{Representation matters}! $\ZZ_{p-1} \cong \ZZ^*_p$ as groups but the discrete logarithm is trivial in the former, assumed hard in the latter. }
 \end{frame}
 
 \begin{frame}
     \frametitle{Why elliptic curves?}
-    
+    \pause
     \begin{center}
         \begin{tabular}{c c c c}
             Assumption & Group   & Best Algorithm & $\approx$ Complexity \\
@@ -527,9 +527,9 @@ keys]{ cryptocode }
             DLP        & $E(\FF_p)$ & Pollard Rho & $\sqrt{p}$ \\
         \end{tabular}
     \end{center}
-    
+    \pause
     \textbf{Best known attacks against ECC are generic attacks}
-    
+    \pause
     \begin{itemize}
         \item Shorter keysizes ($\approx 256$ vs\footnote{For 128 bits of security} 3072 bits)
         \item Faster computation\footnote{against other DLP schemes and private RSA ops}
@@ -539,7 +539,7 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{EC Diffie Hellman Key Exchange}
     Let $E$ be an elliptic curve over $\FF_q$. Let $p$ be a large prime dividing $\#E(\FF_q)$ and $P$ a point of order $p$. 
-    
+    \pause
     \procedureblock{Diffie Hellman}{
         \textbf{Alice} \> \> \textbf{Bob} \\
         x \sample \ZZ_q \> \> y \sample \ZZ_q \\
@@ -548,7 +548,7 @@ keys]{ cryptocode }
         \> \xleftarrow{Q_B} \>  \\
         K = [x]Q_B \> \> K = [y]Q_A
     }
-    
+    \pause
     Correctness follows since:
     \[ K = [x]Q_B = [x][y]P = [xy]P = [y][x]P = [y]Q_A = K \]
 
@@ -558,19 +558,19 @@ keys]{ cryptocode }
     \frametitle{Easy Elliptic Curves}
     \textbf{DLP is not equally hard on every curve}!
     \begin{itemize}
-        \item Singular curves over $\FF_p$. Equivalent to DLP in\footnote{Or in some small extension} $\FF_p^*$ or $\FF_p^+$
-        \item Curves and subgroups with small embedding degree. E.g. supersingular and anomalous curves
-        \item Curves that admit pairings to small finite fields.
-        \item Curves defined over $\FF_{p^k}$ for $k$ with small factors. GHS Method, Diem's Analysis.
+        \item<1-> Singular curves over $\FF_p$. Equivalent to DLP in\footnote{Or in some small extension} $\FF_p^*$ or $\FF_p^+$
+        \item<2-> Curves and subgroups with small embedding degree. E.g. supersingular and anomalous curves
+        \item<3-> Curves that admit pairings to small finite fields.
+        \item<4-> Curves defined over $\FF_{p^k}$ for $k$ with small factors. GHS Method, Diem's Analysis.
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Pollard Rho}
     Collision search for $f: S \to S$. Let $x_0 \in S$, $x_n = f(x_{n-1})$.
-    
+    \pause
     Expected $\sqrt{\pi \#S/2}$ calls to $f$, constant memory.
-    
+    \pause
     \begin{center}
         \includegraphics[width=25em]{pollard_rho.PNG}
     \end{center}
@@ -579,16 +579,16 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Pollard Rho}
     Let $G$ be a group of order $N$. We want to find $k$ s.t. $[k]P = Q$.
-    
+    \pause
     Split $G = A \sqcup B \sqcup C$ with $\# A \approx \# B \approx \#C$.
-    
+    \pause
     Define 
     \[ f(X) = \begin{cases}
         P + X, \; &X \in A \\
         [2]X, \; &X \in B \\
         Q + X, \; &X \in C
     \end{cases} \]
-    
+    \pause
     Let $X_0 = \infty$, then $X_i = [\alpha_i] P + [\beta_i] Q$ and we can track $\alpha_i, \beta_i$. 
     A collision $X_j = X_{j+\ell}$ with $\gcd(\beta_{j+\ell} - \beta_j, N) = 1$ allows us to solve the DLP with
     \[ k \equiv \frac{\alpha_j - \alpha_{j + \ell}}{\beta_{j+\ell} - \beta_j} \pmod{N} \]
@@ -600,14 +600,14 @@ keys]{ cryptocode }
     \frametitle{Pairings}
     \begin{definition}
         Let $\GG, \GG_T$ be two groups. A \textbf{pairing} is a map $e: \GG \times \GG \to \GG_T$ that is:
-        
+        \pause
         \begin{itemize}
-            \item Non degenerate: 
+            \item<2-> Non degenerate: 
             \[ e(S, T) = 1 \; \forall S \in \GG \implies T = 0_{\GG}  \]
-            \item Bilinear:
+            \item<3-> Bilinear:
             \[ e(S_1 + S_2, T) = e(S_1, T)e(S_2, T)\]
             \[ e(S, T_1 + T_2) = e(S, T_1)e(S_2, T_2)\]
-            \item Alternating:
+            \item<4-> Alternating:
             \[ e(T, T) = 1 \]
             
         \end{itemize}
@@ -620,7 +620,7 @@ keys]{ cryptocode }
     \[ e_m : E[m] \times E[m] \to \mu_m \]
     where $\mu_m$ is the group of $m$-th root of unity. 
 
-    
+    \pause
     It is degenerate on cyclic subgroups of $E[m]$, so use modified Weil pairing
     \begin{align*}
         \langle \cdot , \cdot \rangle : E[m] &\times E[m] \to \mu_m \\
@@ -635,7 +635,7 @@ keys]{ cryptocode }
     Let $\GG, \GG_T$ be cyclic groups of prime order $p$. Let $P$ be a generator of $\GG$, and $e$ a non degenerate pairing.
     Also, let $H: \bin^* \to \GG$
     \begin{center}
-    
+    \pause
     \begin{pcvstack}
         \begin{pchstack}
         \procedure{$\mathrm{Gen}(\secparam)$}{
@@ -644,7 +644,7 @@ keys]{ cryptocode }
             sk \coloneqq x  \\
             \pcreturn (pk, sk)
         }
-        
+        \pause
         \procedure{$\mathrm{Sign}(sk, m)$}{
             Q \leftarrow H(m) \\
             \sigma \leftarrow [x]Q \\
@@ -652,13 +652,13 @@ keys]{ cryptocode }
         }
         \end{pchstack}
 
-        
+        \pause
         \procedure[space=auto]{$\mathrm{Verify}(pk, m, \sigma)$}{
             \pcreturn e(\sigma, P) =_? e(H(m), [x]P)
         }
     \end{pcvstack}
     \end{center}
-    
+    \pause
     Correctness by:
     \[ e(\sigma, P) = e([x]Q, P) = e(Q, P)^x = e(Q, [x]P) = e(H(m), [x]P) \]
  
@@ -668,24 +668,24 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Post Quantum}
     \begin{itemize}
-        \item Discrete logarithms, RSA, and pairings broken by Shor's algorithm
-        \item Can we recover?
-        \item Yes, lattices, codes, multinear maps...
-        \item \textbf{Isogenies!}
+        \item<1-> Discrete logarithms, RSA, and pairings broken by Shor's algorithm
+        \item<2-> Can we recover?
+        \item<3-> Yes, lattices, codes, multinear maps...
+        \item<4-> \textbf{Isogenies!}
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{Isogenies}
     ``Nice maps'' between elliptic curves.
-    
+    \pause
     \begin{definition}
         Let $E_1, E_2$ be elliptic curves. An \textbf{isogeny} is a morphism
         \[ \phi : E_1 \to E_2 \]
         with $\phi(\infty) = \infty$.
         If $\phi(E_1) \neq \set{\infty}$, $E_1$ is \textbf{isogenous} to $E_2$.
     \end{definition}
-    
+    \pause
     For example, the curves $y^2 = x^3 + x$ and $y^2 = x^3 - 3x + 3$ are isogenous over $\FF_{71}$ via the isogeny 
     \[ (x, y) \mapsto \left(\frac{x^3 - 4 x^2 + 30 x -12}{(x - 2)^2}, y\cdot\frac{x^3 - 6x^2 -14x + 35}{(x - 2)^3} \right)\]
 \end{frame}
@@ -694,13 +694,13 @@ keys]{ cryptocode }
     \frametitle{Properties of isogenies}
 
     \begin{itemize}
-        \item Each isogeny is also a group homomorphism
-        \item The map $[m]: E \to E$ is an isogeny
-        \item You can compose isogenies
-        \item Each isogeny has a degree, and it is multiplicative $\deg(\phi \circ \psi) = \deg(\phi)\deg(\psi)$
-        \item Each isogeny $\phi: E_1 \to E_2$ has a unique dual $\hat{\phi}: E_2 \to E_1$ such that 
+        \item<1-> Each isogeny is also a group homomorphism
+        \item<2-> The map $[m]: E \to E$ is an isogeny
+        \item<3-> You can compose isogenies
+        \item<4-> Each isogeny has a degree, and it is multiplicative $\deg(\phi \circ \psi) = \deg(\phi)\deg(\psi)$
+        \item<5-> Each isogeny $\phi: E_1 \to E_2$ has a unique dual $\hat{\phi}: E_2 \to E_1$ such that 
         \[ \phi \circ \hat{\phi} = [\deg(\phi)] \]
-        \item An isogeny between two Weierstrass curves has the form
+        \item<6-> An isogeny between two Weierstrass curves has the form
         \[ (x, y) \mapsto \left(\frac{f}{h^2}(x), y\cdot \frac{g}{h^3}(x) \right) \]
     \end{itemize}
 \end{frame}
@@ -712,13 +712,13 @@ keys]{ cryptocode }
         The map:
         \[ \pi: E \to E^{(p^r)}, (x, y) \mapsto \left(x^{p^r}, y^{p^r} \right) \]
         is the $(p^r)$-\textbf{Frobenius isogeny}. 
-         
+        \pause 
         Note if $k = \FF_{p^r}$ then $E^{(p^r)} = E$
     \end{definition}
-    
+    \pause
     If an isogeny factors trough a Frobenius isogeny it is inseparable. 
     If it is a Frobenius followed by an isomorphisms, it is purely inseparable.
-    
+    \pause
     We are mostly  concerned with the separable case.
 
 \end{frame}
@@ -728,11 +728,11 @@ keys]{ cryptocode }
     \begin{theorem}
        There is a one to one correspondence between finite subgroups of elliptic curves 
        and separable isogenies from that curve, up to post-compostion with isomorphisms
-       
+       \pause
        \[ \text{kernels} \longleftrightarrow \text{isogenies} \]
 
     \end{theorem}
-    
+    \pause
        Let $E/k$, with $k$ a finite field. For any subgroup $H \leq E$ we can find an 
        isogeny with kernel $H$ in $\Theta(\#H)$ using Velu's formulas. We denote the target of 
        that isogeny by $E/H$
@@ -742,11 +742,11 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Computing large degree isogenies}
     \begin{itemize}
-        \item Velu's formula are too slow for large degree
-        \item Decompose $\ell^k$ isogenies in $k$ $\ell$-isogenies
-        \item Speedup from $\Theta(\ell^k)$ to $\Theta(k^2 \ell)$
+        \item<1-> Velu's formula are too slow for large degree
+        \item<2-> Decompose $\ell^k$ isogenies in $k$ $\ell$-isogenies
+        \item<3-> Speedup from $\Theta(\ell^k)$ to $\Theta(k^2 \ell)$
     \end{itemize}
-
+    \onslide{4-}{
     Take $H \cong \ZZ_{\ell^k}$. Set $\ker \psi_i = [\ell^{k - i}](\psi_{i-1} \circ \dots \circ \psi_1)(H)$. 
     Then $\mathrm{deg}(\psi_i) = \ell$ and 
 
@@ -765,6 +765,7 @@ keys]{ cryptocode }
             
         \end{tikzpicture}
     \end{center}
+    }
 
 \end{frame}
 
@@ -775,13 +776,13 @@ keys]{ cryptocode }
         if $[p]$ is purely inseparable and $j(E) \in \FF_{p^2}$. 
         A curve that is not supersingular is \textbf{ordinary}
     \end{definition}
-    
+    \pause
     \begin{itemize}
-        \item Something something order in a quaternion algebra?
-        \item There are $\approx \lfloor \frac{p}{12} \rfloor$ supersingular curves over $\FF_{p^n}$.
-        \item A supersingular curve has $p + 1$ points.
-        \item Insecure for DLP
-        \item Secure for CSSI (later)!
+        \item<2-> Something something order in a quaternion algebra?
+        \item<3-> There are $\approx \lfloor \frac{p}{12} \rfloor$ supersingular curves over $\FF_{p^n}$.
+        \item<4-> A supersingular curve has $p + 1$ points.
+        \item<5-> Insecure for DLP
+        \item<6-> Secure for CSSI (later)!
     \end{itemize}
     
 
@@ -790,13 +791,13 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Isogeny Problems}
     It is easy to find out if two curves are isogenous
-    
+    \pause
     \begin{theorem}
         Two curves $E_1, E_2$ over a finite field $k$ are isogenous over $k$ if and only if $\#E_1(k) = \#E_2(k)$.
     \end{theorem}
-    
+    \pause
    Finding the isogeny is dramatically harder:
-   
+   \pause
    \begin{definition}
        The \textbf{computational supersingular isogeny problem} is as follows:
        Given two supersingular elliptic curves $E, E'$, find an isogeny between them. 
@@ -814,22 +815,22 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Isogeny Graphs}
     Let $p, \ell$ be a primes.
-    
+    \pause
     \begin{definition}
         The $\ell$\textbf{-supersingular isogeny graph} has as:
         \begin{itemize}
-            \item Vertices: Supersingular Elliptic curves over $\overline{\FF}_p$
-            \item Edges: Separable isogenies from $E \to E'$
+            \item<2-> Vertices: Supersingular Elliptic curves over $\overline{\FF}_p$
+            \item<3-> Edges: Separable isogenies from $E \to E'$
         \end{itemize}
-
-        Both up to isomorphisms (i.e. vertices are $j$-invariants)
+        \onslide{4-}{
+        Both up to isomorphisms (i.e. vertices are $j$-invariants)}
     \end{definition}
     \begin{itemize}
-        \item We can represent vertices as elements of $\FF_{p^2}$
-        \item Graph is directed
-        \item Graph has good mixing properties
-        \item Can walk in the graph with Velu's method
-        \item Most vertices have degree $\ell + 1$
+        \item<5-> We can represent vertices as elements of $\FF_{p^2}$
+        \item<6-> Graph is directed
+        \item<7-> Graph has good mixing properties
+        \item<8-> Can walk in the graph with Velu's method
+        \item<9-> Most vertices have degree $\ell + 1$
     \end{itemize} 
 
 \end{frame}
@@ -887,47 +888,47 @@ Details will follow
 \begin{frame}
     \frametitle{SIDH}
     Parties select $p = 2^{e_A} 3^{e_B} - 1$ prime,
-     a supersingular starting curve $E/\overline{\FF}_{p^2}$,
-     four points $P_A, P_B, Q_A, Q_B$ s.t.
+    \pause a supersingular starting curve $E/\overline{\FF}_{p^2}$,
+    \pause four points $P_A, P_B, Q_A, Q_B$ s.t.
     $\langle P_A, Q_A \rangle = E[2^{e_A}], \langle P_B, Q_B \rangle = E[3^{e_B}]$.
     \begin{itemize}
-        \item Alice, Bob sample $n_A \sample \ZZ_{2^{e_A}}, n_B \sample \ZZ_{3^{e_B}}$, and compute $S_{X} = P_X + [n_X]Q_X$
-        \item Alice computes the $2^{e_A}$ isogeny $\phi_A: E \to E/\langle S_A\rangle = E_A$
-        \item Bob computes the $3^{e_B}$ isogeny $\phi_B: E \to E/\langle S_B\rangle = E_B$
-        \item The public keys are $\mathrm{pk}_X = \left(E_X, P_X' = \phi_X(P_X), Q_X' = \phi_X(Q_X)\right)$
-        \item Alice computes $S'_A = P'_B + [n_A] Q'_B$, and an isogeny $\phi'_A : E_B \to E/\langle S'_A \rangle = E_{AB}$
-        \item Bob computes $S'_B = P'_A + [n_B] Q'_A$, and an isogeny $\phi'_B : E_A \to E/\langle S'_B \rangle = E_{BA}$
-        \item The final secret is $j(E_{AB}) = j(E_{BA})$
+        \item<3-> Alice, Bob sample $n_A \sample \ZZ_{2^{e_A}}, n_B \sample \ZZ_{3^{e_B}}$, and compute $S_{X} = P_X + [n_X]Q_X$
+        \item<4-> Alice computes the $2^{e_A}$ isogeny $\phi_A: E \to E/\langle S_A\rangle = E_A$
+        \item<5-> Bob computes the $3^{e_B}$ isogeny $\phi_B: E \to E/\langle S_B\rangle = E_B$
+        \item<6-> The public keys are $\mathrm{pk}_X = \left(E_X, P_X' = \phi_X(P_X), Q_X' = \phi_X(Q_X)\right)$
+        \item<7-> Alice computes $S'_A = P'_B + [n_A] Q'_B$, and an isogeny $\phi'_A : E_B \to E/\langle S'_A \rangle = E_{AB}$
+        \item<8-> Bob computes $S'_B = P'_A + [n_B] Q'_A$, and an isogeny $\phi'_B : E_A \to E/\langle S'_B \rangle = E_{BA}$
+        \item<9-> The final secret is $j(E_{AB}) = j(E_{BA})$
     \end{itemize}
 \end{frame}
 
 \begin{frame}
     \frametitle{SIDH and SIKE}
     \begin{itemize}
-        \item SIDH is vulnerable to active attacks
-        \item SIKE uses the Fujisaki-Okamoto transform to fix this 
-        \item SIKE in the Alternate Candidates of Round 3 of the NIST PQC competion
-        \item Very short keys
-        \item Currently a bit on the slow side
-        \item Best known attack is classical
+        \item<1-> SIDH is vulnerable to active attacks
+        \item<2-> SIKE uses the Fujisaki-Okamoto transform to fix this 
+        \item<2-> SIKE in the Alternate Candidates of Round 3 of the NIST PQC competion
+        \item<3-> Very short keys
+        \item<3-> Currently a bit on the slow side
+        \item<4-> Best known attack is classical
     \end{itemize} 
 \end{frame}
 
 \begin{frame}
     \frametitle{Security}
     Best attack is on CSSI problem.
-     
+    \pause 
     Suppose we want to find an $\ell^a$-isogeny  between $E_0 \to E_1$, both 
     supersingular over $\overbar{\FF}_p$.
-     Let $k \approx a/2$ and
+    \pause Let $k \approx a/2$ and
     \begin{align*}
         S_{i, k} &\coloneqq \set{ H \leq E_i[\ell^k] \mid \; H \text{ cyclic}, |H| = \ell^k } \\
         S &\coloneqq \left( \set{0} \times S_{0, k} \right) \sqcup \left( \set{1} \times S_{1, k} \right) \\
         g: S &\to \FF_{p^2}, \; (i, H) \mapsto j(E_{i}/H)
     \end{align*}
-    
+    \pause
     A collision $g(0, H) = g(1, H')$ will solve CSSI.
-     To enable Pollard-Rho style methods, let $h: \FF_{p^2} \to S$ 
+    \pause To enable Pollard-Rho style methods, let $h: \FF_{p^2} \to S$ 
     be a hash function, and let:
     \[ f: S \to S,\; f \coloneqq h \circ g \]
 \end{frame}
@@ -935,9 +936,9 @@ Details will follow
 \begin{frame}
     \frametitle{Security}
     $h$ maps a set $\approx p/12$ to $S$ which has size $\approx p^{1/4}$ so introduces a lot of collisions.
-    
+    \pause
     To find a `golden' one we use the van Oorschot Wiener (vOW) algorithm. 
-    
+    \pause
     When using $m$ processors and $w$ memory cells, time complexity\footnote{In terms of $\ell^k$-isogeny computations} is 
     \[ \frac{2.5}{m}\sqrt{\#S^3/w} = O(p^{3/8})  \]
 \end{frame}
@@ -946,11 +947,11 @@ Details will follow
 \begin{frame}
     \frametitle{Conclusion}
     \begin{itemize}
-        \item Elliptic curves are pretty damn cool
-        \item We only scratched the surface!
-        \item ECDH base of most of the web's key exchanges
-        \item BLS Pairing based signatures both efficient and secure
-        \item SIKE leverages isogenies for post quantum security
+        \item<1-> Elliptic curves are pretty damn cool
+        \item<1-> We only scratched the surface!
+        \item<2-> ECDH base of most of the web's key exchanges
+        \item<3-> BLS Pairing based signatures both efficient and secure
+        \item<4-> SIKE leverages isogenies for post quantum security
     \end{itemize}
     
 
