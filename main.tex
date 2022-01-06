@@ -45,10 +45,51 @@ keys]{ cryptocode }
 
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 
+\newcommand{\plotcurveflexible}[4][thick, every plot/.style={smooth}]{
+  % plot curve y^2 = x^3 + a x^2 + b x + c in range [-3,3]^2
+  % parameter 1 (optional): style options for curve (color, etc)
+  % parameter 2: curve parameter a
+  % parameter 3: curve parameter b
+  % paramater 4: curve paramter c
+  \draw[gray] (-3,-3) rectangle (3,3);
+  \draw[->,>=latex,gray] (-3,0) -- (3,0);
+  \draw[->,>=latex,gray] (0,-3) -- (0,3);
+  \draw[name path=curve, #1] plot[id=curve#2#3#4, raw gnuplot] function {
+    f(x,y) = y**2 - x**3 -#2*x**2 - #3*x - #4;
+    set xrange [-3:3];
+    set yrange [-3:3];
+    set view 0,0;
+    set isosample 50,50;
+    set cont base;
+    set cntrparam levels incre 0,0.1,0;
+    unset surface;
+    splot f(x,y);
+  };
+}
+
+\newcommand{\plotcurve}[3][thick, every plot/.style={smooth}]{
+  % plot curve y^2 = x^3 + a x + b in range [-3,3]^2
+  % parameter 1 (optional): style options for curve (color, etc)
+  % parameter 2: curve parameter a
+  % parameter 3: curve parameter b
+  \draw[gray] (-3,-3) rectangle (3,3);
+  \draw[->,>=latex,gray] (-3,0) -- (3,0);
+  \draw[->,>=latex,gray] (0,-3) -- (0,3);
+  \draw[name path=curve, #1] plot[id=curve#2#3, raw gnuplot] function {
+    f(x,y) = y**2 - x**3 - #2*x - #3;
+    set xrange [-3:3];
+    set yrange [-3:3];
+    set view 0,0;
+    set isosample 50,50;
+    set cont base;
+    set cntrparam levels incre 0,0.1,0;
+    unset surface;
+    splot f(x,y);
+  };
+}
+
 \usepackage{tikz}
-\usetikzlibrary{positioning}
-\usetikzlibrary{arrows}
-\usetikzlibrary{intersections}
+\usetikzlibrary{arrows,positioning,intersections}
 
 %Information to be included in the title page:
 \title{Elliptic Curve Cryptography}
@@ -73,7 +114,7 @@ keys]{ cryptocode }
         \item Elliptic curves are everywhere in cryptography
         \item Power $\approx 70\%$ of TLS Exchanges
         \item Coolest post quantum cryptography proposal
-        \item Maths is banging
+        \item Fascinating mathematically
     \end{itemize}
 \end{frame}
 
@@ -151,11 +192,11 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Fields}
     \begin{definition}
-        A field $\FF$ is set together with two operations $+, \cdot$ such that 
+        A field $K$ is set together with two operations $+, \cdot$ such that 
         \begin{itemize}
-            \item $\FF$ is an abelian group under $+$ with identity $0$
-            \item $\FF - \{ 0 \}$ is an abelian group under multiplication with identity $1$.
-            \item For every $a,b,c \in \FF$ we have that $a (b + c) = ab + ac$
+            \item $K$ is an abelian group under $+$ with identity $0$
+            \item $K - \{ 0 \}$ is an abelian group under multiplication with identity $1$.
+            \item For every $a,b,c \in K$ we have that $a (b + c) = ab + ac$
             \item $0 \neq 1$
         \end{itemize}
     \end{definition}
@@ -226,7 +267,7 @@ keys]{ cryptocode }
     \frametitle{Elliptic curves}
     \begin{center}
         
-    \begin{tikzpicture}[thick,>=latex]
+    \begin{tikzpicture}[thick,>=latex,scale=0.8]
     % Curve over R
 
     % Requires GNUplot installation (part of TeXLive)
@@ -279,12 +320,58 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{Some elliptic curves}
-    \framesubtitle{(In $E(\mathbb{R})$ since they look better...)}
-    TODO: One singular with cusp, one node and three non singular
+    \begin{center}
+
+    \begin{tikzpicture}[scale=0.8]
+    \foreach \a in {-2,...,1} {
+      \foreach \b in {-1,...,2} {
+        \begin{scope}[xshift=1.75*\b cm,yshift=-1.75*\a cm,scale=.25]
+          \plotcurve{\a}{\b}
+        \end{scope}
+      }
+      \draw (-1.75*2+1,-1.75*\a) node[above,rotate=90] {$a=\a$};
+    }
+    \foreach \b in {-1,...,2} {
+      \draw (1.75*\b,1.75*3-1) node[above] {$b=\b$};
+    }
+    \node[above] at (1.75/2,-2*1.75) {$y^2 = x^3 + a x + b$};
+  \end{tikzpicture}
+          
+    \end{center}
+\end{frame}
+\begin{frame}
+    \frametitle{More elliptic curves}
+    \begin{center}
+
+    \begin{tikzpicture}[scale=0.8]
+    
+        \node[above] at (0,1.75) {\tiny $y^2 = x^3 + -3 x + 3$};
+        \begin{scope}[xshift=0 cm,yshift=0 cm,scale=.50]
+          \plotcurveflexible{0}{-3}{+3}
+        \end{scope}
+        \node[above] at (3.5,1.75) {\tiny $y^2 = x^3 + x$};
+        \begin{scope}[xshift=3.5 cm,yshift=0 cm,scale=.50]
+          \plotcurveflexible{0}{1}{0}
+        \end{scope}
+        \node[above] at (7,1.75) {\tiny $y^2 = x^3 - x$};
+        \begin{scope}[xshift=7 cm,yshift=0 cm,scale=.50]
+          \plotcurveflexible{0}{-1}{0}
+        \end{scope}
+        \node[below] at (1.75,-5) {\tiny $y^2 = x^3 - x$};
+        \begin{scope}[xshift=1.75 cm,yshift=-3.5 cm,scale=.50]
+          \plotcurveflexible{0}{0}{0}
+        \end{scope}
+        \node[below] at (5.25,-5) {\tiny $y^2 = x^3 + x^2$};
+        \begin{scope}[xshift=5.25 cm,yshift=-3.5 cm,scale=.50]
+          \plotcurveflexible{1}{0}{0}
+        \end{scope}
+  \end{tikzpicture}
+          
+    \end{center}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Fundamental Quantities}
+    \frametitle{Discriminat}
     \begin{definition}
         Let $E: y^2 = x^3 + a x + b$ be an elliptic curve.
 
@@ -316,7 +403,9 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{The Group Law} 
-    TODO: Picture group law
+    \begin{center}
+        \includegraphics[width=20 em]{group_law.png}
+    \end{center}
 \end{frame}
 
 \begin{frame}
@@ -327,7 +416,7 @@ keys]{ cryptocode }
     \begin{itemize}
         \item If $x_1 = x_2$ and $y_1 = -y_2$, then $P_1 + P_2 = \infty$
         \item If $P_1 = \infty$ then $P_1 + P_2 = P_2$, and viceversa.
-        \item Let $x_3 = \lambda^2 - x_1 - x_2$, $y_3 = \lambda(x_1 - x_3) - y_1$ where $\lambda$ is defined as:
+        \item Let $x_3 = \lambda^2 - x_1 - x_2$, $y_3 = \lambda(x_1 - x_3) - y_1$ where $\lambda$ is:
         \[ \lambda = \begin{cases}
             \frac{y_2 - y_1}{x_2 - x_1}, \; x_1 \neq x_2 \\
             \frac{3 x_1^2 + a}{2y_1},\; \text{otherwise}
@@ -341,9 +430,9 @@ keys]{ cryptocode }
     For $n > 0, P \in E$ we write $[n]P = \underbrace{P + \dots + P}_{n \text{ times}}$. We then extend the notation by letting $[0]P = \infty$ and 
     $[-n]P = [n](-P)$.
 
-    Note that we can compute $[n]P$ in $\Theta(\log n)$ group operations using square and multiply.
+    We can compute $[n]P$ in $\Theta(\log n)$ group operations using double and add.
 
-    For $m \in \ZZ$ we can define a map $[m]: E \to E$ accordingly, and write:
+    For $m \in \ZZ$ we define a map $[m]: E \to E$ accordingly, and write:
     \[ E[m] \coloneqq \ker[m] \]
     to be the $m$-\textbf{torsion subgroup} of $E$.
 \end{frame}
@@ -383,8 +472,8 @@ keys]{ cryptocode }
         \item CHD: From $[x]P, [y]P$ compute $[xy]P$
         \item DDH: Distinguish $(P, [x]P, [y]P, [xy]P)$ from $(P, [x]P, [y]P, [z]P)$
     \end{itemize}
-    In fact, pairings make DDH easy on elliptic curves! 
-    \[ \mathrm{DDH} \leq_R \mathrm{CDH} \leq_R\footnote{In fact equivalent} \mathrm{DLP} \]
+    Pairings make DDH easy on elliptic curves! 
+    \[ \mathrm{DDH} \leq_R \mathrm{CDH} \leq_R\footnote{In fact equivalent in certain groups} \mathrm{DLP} \]
 
     \textbf{Representation matters}! $\ZZ_{p-1} \cong \ZZ^*_p$ as groups but the discrete logarithm is trivial in the former, assumed hard in the latter. 
 \end{frame}
@@ -483,7 +572,7 @@ keys]{ cryptocode }
     \[ e_m : E[m] \times E[m] \to \mu_m \]
     where $\mu_m$ is the group of $m$-th root of unity. 
 
-    In degenerate on cyclic subgroups of $E[m]$, so use modified Weil pairing
+    It is degenerate on cyclic subgroups of $E[m]$, so use modified Weil pairing
     \begin{align*}
         \langle \cdot , \cdot \rangle : E[m] &\times E[m] \to \mu_m \\
         \langle P, Q \rangle &= e_m(S, \phi(Q))
@@ -654,7 +743,10 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{Isogeny Graphs}
-    TODO: Insert picture
+    Look something like this! We focus on the second
+    \begin{center}
+        \includegraphics[width=28em]{isogeny_graph.PNG}
+    \end{center}
 \end{frame}
 
 \begin{frame}
@@ -679,9 +771,35 @@ keys]{ cryptocode }
 \end{frame}
 
 \begin{frame}
-    \frametitle{SIDH} 
-    TODO: Picture
+    \frametitle{SIDH ($p = 2^4 3^3 - 1$)}
+    \framesubtitle{Alice's pk}
+    \begin{center}
+        \includegraphics[width=25em]{alice_pk.PNG}
+    \end{center}
+\end{frame}
 
+\begin{frame}
+    \frametitle{SIDH ($p = 2^4 3^3 - 1$)}
+    \framesubtitle{Bob's pk}
+    \begin{center}
+        \includegraphics[width=25em]{bob_pk.PNG}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{SIDH ($p = 2^4 3^3 - 1$)}
+    \framesubtitle{Alice's pk}
+    \begin{center}
+        \includegraphics[width=25em]{alice_shared.PNG}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{SIDH ($p = 2^4 3^3 - 1$)}
+    \framesubtitle{Alice's pk}
+    \begin{center}
+        \includegraphics[width=25em]{bob_shared.PNG}
+    \end{center}
 \end{frame}
 
 \begin{frame}
@@ -690,9 +808,9 @@ keys]{ cryptocode }
 \begin{center}
     \begin{tikzpicture}
   \node (e) {$E$};
-  \node (ea) [right=4 of e] {$E_A$};
-  \node (eb) [below=2 of e] {$E_B$};
-  \node (eab) [below=2 of ea] {$E_{AB} \cong E_{BA}$};
+  \node (ea) [right=4 of e] {$E/\langle A \rangle$};
+  \node (eb) [below=2 of e] {$E/\langle B \rangle$};
+  \node (eab) [below=2 of ea] {$E/\langle A, B \rangle$};
   \draw[->] (e) to node [above] {$\phi_A$} (ea);
   \draw[->] (e) to node [left] {$\phi_B$} (eb);
   \draw[->] (ea) to node [right] {$\phi'_B$} (eab);
@@ -738,7 +856,7 @@ Details will follow
         S &\coloneqq \left( \set{0} \times S_{0, k} \right) \sqcup \left( \set{1} \times S_{1, k} \right) \\
         g: S &\to \FF_{p^2}, \; (i, H) \mapsto j(E_{i}/H)
     \end{align*}
-    A collision $g(0, H) = g(1, H')$ will solve the isogeny problem. To allow for Pollard-Rho style methods, let $h: \FF_{p^2} \to S$ 
+    A collision $g(0, H) = g(1, H')$ will solve CSSI. To enable Pollard-Rho style methods, let $h: \FF_{p^2} \to S$ 
     be a hash function, and let:
     \[ f: S \to S,\; f \coloneqq h \circ g \]
 \end{frame}
@@ -749,8 +867,6 @@ Details will follow
     To find a `golden' one we use the van Oorschot Wiener (vOW) algorithm. 
     When using $m$ processors and $w$ memory cells, time complexity\footnote{In terms of $\ell^k$-isogeny computations} is 
     \[ \frac{2.5}{m}\sqrt{\#S^3/w} = O(p^{3/8})  \]
-    
-    TODO: Add image
 \end{frame}
 
 \section{Conclusion}
@@ -759,7 +875,7 @@ Details will follow
     \begin{itemize}
         \item Elliptic curves are pretty damn cool
         \item We only scratched the surface!
-        \item Elliptic Curve Diffie Hellman base of most of web key exchanges
+        \item ECDH base of most of the web's key exchanges
         \item BLS Pairing based signatures both efficient and secure
         \item SIKE leverages isogenies for post quantum security
     \end{itemize}
@@ -768,17 +884,105 @@ Details will follow
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[noframenumbering]
     \frametitle{Resources}
     \begin{itemize}
-        \item  J.H. Silverman, J.T. Tate, Rational Points on Elliptic Curves 
-        \item  J.H. Silverman, The Arithmetic of Elliptic Curves\footnote{The bible}
-        \item  D.A. Cox, Primes of the form $x^2 + n y^2$
-        \item L. Panny, notes: \href{https://yx7.cc/docs/misc/isog_bristol_notes.pdf}{[intro]} \href{https://yx7.cc/docs/misc/isogprob_bristol_notes.pdf}{[isogenies problems]}
-        \item C. Costello, \href{https://eprint.iacr.org/2019/1321.pdf}{Supersingular isogeny key exchange for beginners}
-        \item R. Granger, A. Joux, Computing Discrete Logarithms [5.2, 5.3]
+        \item [0]  J.H. Silverman, J.T. Tate, Rational Points on Elliptic Curves 
+        \item [1].H. Silverman, The Arithmetic of Elliptic Curves\footnote{The bible}
+        \item [2] D.A. Cox, Primes of the form $x^2 + n y^2$
+        \item [3,4] L. Panny, notes: \href{https://yx7.cc/docs/misc/isog_bristol_notes.pdf}{[intro]} \href{https://yx7.cc/docs/misc/isogprob_bristol_notes.pdf}{[isogenies problems]}
+        \item [5]C. Costello, \href{https://eprint.iacr.org/2019/1321.pdf}{Supersingular isogeny key exchange for beginners}
+        \item [6]R. Granger, A. Joux, Computing Discrete Logarithms [5.2, 5.3]
+        \item [7]P. Aluffi, Algebra: Chapter 0
+        \item [8]S. Galbraith, Mathematics of Public Key Cryptography
     \end{itemize}
 \end{frame}
 
+\begin{frame}[noframenumbering]
+   \frametitle{Detailed References \& Credits}
+   \begin{itemize}
+       \item Historical Notes follow mostly [0, Introduction]
+       \item Origin of the name elliptic can be found \href{https://www.unf.edu/~ddreibel/mas4932/elliptic-integrals.pdf}{[here]}
+       \item Fields discussed in [7, III.1.14, VII]
+       \item Weierstrass form in [1, III.1] 
+       \item Definition of elliptic curve [1, III.2.2, III.3] or  [0, 2.2]
+       \item Elliptic curves diagram from \href{https://www.iacr.org/authors/tikz/}{[iacr]} and curves from [1, Fig 3.1, 3.2]
+       \item Discriminant, $j$-invariant formula from [1, III.1]
+       \item Discriminant interpretation [0, 2.3]
+       \item Isomorphism form [1, III.3.1b]
+       \item Theorem $j$-invariance [1, III.1.4b]
+       
+   \end{itemize}
+\end{frame}
+
+\begin{frame}[noframenumbering]
+    \frametitle{Detailed References \& Credits}
+   \begin{itemize}
+       \item Group Law diagram [0, Fig 1.16]
+       \item Formulae [1, III.2.3]
+       \item Scalar multiplication notation [1, III.2]
+       \item Multiplication isogeny [1, III.4.1]
+       \item Double and add [1, XI.1]
+       \item Torsion subgroup [1, III.4]
+       \item Hasse's theorem [1, V.1.1]
+       \item Schoof's algorithm [1, XI.3]
+       \item DLP and related assumption [8. III.13]
+       \item Partial Equivalence of CHD and DLP in \href{https://crypto.ethz.ch/publications/Maurer94.html}{[Maurer]} \href{https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.232.8069&rep=rep1&type=pdf}{[Fifield]}
+       
+   \end{itemize}
+\end{frame}
+
+\begin{frame}[noframenumbering]
+    \frametitle{Detailed References \& Credits}
+    \begin{itemize}
+    \item Representation example expanded in [6, 5.3.1]
+       \item Complexity estimates from [0, 4.5] and [1, XI.4]
+       \item Diffie Hellman from [everywhere?]
+       \item Singular curves are bad [0, 3.15] and [1, III.2.5] and [6, 5.3.3]
+       \item Small Embedding degree ECDLP [1, XI.6] and [6, 5.2.2]
+       \item Supersingular curves breaking ECDLP [1, XI.6.4] and [6, 5.2.2]
+       \item Anomalous curves breaking ECDLP [1, XI.6.5] and [6, 5.2.2] and [6, 5.3.3]
+       \item Descent methods in [6, 5.2.2]
+        \item Pollard Rho description [1, XI.5.3-5.4]
+        \item Pairings adapted from [1, III.8.1]
+        \item Weil Pairing computation [1, XI.8]
+        \item Modified Weil Pairing and Distorsion map [1, XI.7]
+      \end{itemize}
+\end{frame}
+
+\begin{frame}[noframenumbering]
+    \frametitle{Detailed References \& Credits}
+    \begin{itemize}
+       
+        
+        \item BLS Signatures [1, XI.7.4]
+        \item Isogeny definition [1, III.4]
+        \item Isogeny Example from [3, 2.1]
+        \item Isogeny properties (summary) [3, 2.1]
+        \item Isogeny and Group Hom. [1, III.4.8]
+        \item Isogeny composition, degree and multiplicativity [1, III.4]
+        \item Dual Isogeny [1, III.6]
+        \item Frobenius isogeny and separability [3, 2.1.2]
+        \item Kernels and Velu [3, 2.2] and [1, III.4.12]
+        \item Supersingular curves [1, V.3.1]
+        \item Number of curves [1, V.4.1c]
+        \item Points of supersingular curve [3, 1.8]
+      \end{itemize}
+\end{frame}
+
+
+\begin{frame}[noframenumbering]
+    \frametitle{Detailed References \& Credits}
+    \begin{itemize}
+        \item Isogenous with same number of points [1, Ex. 5.4]
+        \item Graphs from L. Panny's \href{https://yx7.cc/docs/phd/lekenpraatje.pdf}{[lekenpraatje]}
+        \item Vertices as elements of $\FF_{p^2}$ from [1, V.3.1]
+        \item Good mixing properties from \href{https://eprint.iacr.org/2006/021.pdf}{[CGL06]}
+        \item SIDH diagrams and description from [5]
+        \item SIKE \href{https://sike.org}{[sike]}
+        \item vOW function from [4, 3.1] and \href{https://eprint.iacr.org/2018/313.pdf}{[ACV+18]}
+        \item vOW description [4, 3.2] and \href{https://link.springer.com/content/pdf/10.1007/PL00003816.pdf}{[vOW98]}
+      \end{itemize}
+\end{frame}
 
 \end{document}
