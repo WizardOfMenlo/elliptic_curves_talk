@@ -25,6 +25,10 @@ keys]{ cryptocode }
 
 \usepackage{amsfonts}
 
+\usepackage{pgfpages}
+\setbeameroption{show notes}
+\setbeameroption{show notes on second screen=right}
+
 \usepackage[style=british]{csquotes}
 \usepackage{graphicx}
 \graphicspath{ {./img/} }
@@ -146,8 +150,14 @@ keys]{ cryptocode }
     Often very hard, and in general undecidable! 
 
     Let us see what we can do...
+\note[item]{
+        Very easy over the reals, hard otherwise
+        \item Solvable? How many solutions?
+        \item Undecidable in 11 variables already
+}
 
 \end{frame}
+
 
 \begin{frame}
     \frametitle{One variable}
@@ -162,6 +172,9 @@ keys]{ cryptocode }
     Check the finite list of candidates.
 
     Alternatively, solve numerically and find candidate of form $\frac{b}{a_n}$
+    \note[item]{
+        Uses Gauss' Lemma
+    }
 \end{frame}
 
 \begin{frame}
@@ -180,6 +193,10 @@ keys]{ cryptocode }
         \item Given a rational point, all of them can be found geometrically
         \item Hasse principle allows us to test if a rational point exists
     \end{itemize}
+    \note[item]{
+        Take the rational point, draw a line
+        \item Hasse = Local to Global: Solvable in rational iff in reals and p-adic for every p
+    }
 
 \end{frame}
 
@@ -200,6 +217,10 @@ keys]{ cryptocode }
     \begin{center}
         \textbf{Elliptic Curves $\neq$ Ellipse}
     \end{center}
+    \note[item]{
+        Local to global fails
+        \item Originated in computation of arc length of ellipse
+    }
 \end{frame}
 
 \section{Background}
@@ -230,6 +251,9 @@ keys]{ cryptocode }
     If $n = 1$, then $\FF_{p} = \ZZ_p$, if not we can write them as
     \[ \FF_{p^n} = \frac{\FF_{p}[X]}{(f(x))} \]
     where $f(x)$ is an irreducible polynomial of degree $n$.
+    \note[item]{
+        $\FF_{8} = \FF_2[X]/(x^3 + x + 1)$
+    }
 \end{frame}
 
 \begin{frame}
@@ -238,6 +262,10 @@ keys]{ cryptocode }
     \[ \underbrace{1 + \dots 1}_{\ell \text{ times}} = 0, \]
     or $\infty$ if no such integer exists.
     We have that $\mathrm{char}(\FF_{p^n}) = p$. 
+    \note[item]{
+        If two fields have different char, no map between them (apart 0)
+        \item Freshman's dream
+    }
 \end{frame}
 
 \begin{frame}
@@ -253,6 +281,11 @@ keys]{ cryptocode }
         \item<1-> $\QQ \subseteq \mathbb{R} \subseteq \mathbb{C}$
         \item<2-> $\FF_p \subseteq \FF_{p^2} \subseteq \FF_{p^3} \dots \subseteq \overline{\FF}_{p}$
     \end{itemize}
+    \note[item]{
+        Closures are always infinite
+        \item Can approximate $\overbar{\FF}$ with $\FF_{p^n!}$
+        \item Base of Galois theory
+    }
 \end{frame}
 
 \section{Elliptic Curves}
@@ -267,6 +300,13 @@ keys]{ cryptocode }
         \disponslide{3-}{y^2 = x^3 }&\disponslide{3-}{+ a x + b}
     \end{align*}
     \onslide{4-}{Much easier to manage!}
+    \note[item]{
+        Weierstrass most common (academically)
+        \item Other models exist
+        \item Montgomery curves (x-only)
+        \item Edwards curves (Complete addition formula)
+        \item Legendre curves
+    }
 \end{frame}
 
 \begin{frame}
@@ -281,6 +321,10 @@ keys]{ cryptocode }
     \end{definition}
     \pause
     Mathematicians are often interested with $E(\QQ) \subseteq E(\mathbb{R}) \subseteq E(\mathbb{C})$ but we mostly consider the finite case.
+    \note[item]{
+        Projective closure
+        \item Point at infinity correspond to $(0: 1: 0)$
+    }
 \end{frame}
 
 
@@ -390,6 +434,12 @@ keys]{ cryptocode }
   \end{tikzpicture}
           
     \end{center}
+    
+    \note[item]{
+        Top are non singular
+        \item First singular has cusp
+        \item Second has a node
+    }
 \end{frame}
 
 \begin{frame}
@@ -480,6 +530,10 @@ keys]{ cryptocode }
     \end{theorem}
     \pause
     Exact value can be efficiently found using Schoof's algorithm in $O((\log q)^8)$.
+    \note[item]{
+        Each value of $x$ yields at most two of $y$
+        \item a random element has 50\% of being quadratic residue
+    }
 \end{frame}
 
 \subsection{Discrete Log Crypto}
@@ -515,6 +569,10 @@ keys]{ cryptocode }
 
     \onslide<6->{
     \textbf{Representation matters}! $\ZZ_{p-1} \cong \ZZ^*_p$ as groups but the discrete logarithm is trivial in the former, assumed hard in the latter. }
+    \note[item]{
+        In fact in some groups CDH and DLP are equivalent
+        \item Check $e(g^x, g^y) = e(g, g^z)$
+    }
 \end{frame}
 
 \begin{frame}
@@ -535,6 +593,10 @@ keys]{ cryptocode }
         \item Shorter keysizes ($\approx 256$ vs 3072 bits)
         \item Faster computation
     \end{itemize}
+    \note[item]{
+        128 bits
+        \item RSA public key ops are faster, private ops slower
+    }
 \end{frame}
 
 \begin{frame}
@@ -552,7 +614,10 @@ keys]{ cryptocode }
     \pause
     Correctness follows since:
     \[ K = [x]Q_B = [x][y]P = [xy]P = [y][x]P = [y]Q_A = K \]
-
+    \note[item]{
+        Need to check received points are on curve
+        \item Invalid points attacks
+    }
 \end{frame}
 
 \begin{frame}
@@ -564,6 +629,9 @@ keys]{ cryptocode }
         \item<3-> Curves that admit pairings to small finite fields.
         \item<4-> Curves defined over $\FF_{p^k}$ for $k$ with small factors. GHS Method, Diem's Analysis.
     \end{itemize}
+    \note[item]{
+        Embedding degree -> MOV algorithm
+    }
 \end{frame}
 
 \begin{frame}
@@ -575,6 +643,10 @@ keys]{ cryptocode }
     \begin{center}
         \includegraphics[width=25em]{pollard_rho.PNG}
     \end{center}
+    \note[item]{
+        In practice, to detect cycle step one iterator by one and one by two
+        \item Not parallelizable, use vOW (more memory)
+    }
 \end{frame}
 
 \begin{frame}
@@ -593,7 +665,10 @@ keys]{ cryptocode }
     Let $X_0 = \infty$, then $X_i = [\alpha_i] P + [\beta_i] Q$ and we can track $\alpha_i, \beta_i$. 
     A collision $X_j = X_{j+\ell}$ with $\gcd(\beta_{j+\ell} - \beta_j, N) = 1$ allows us to solve the DLP with
     \[ k \equiv \frac{\alpha_j - \alpha_{j + \ell}}{\beta_{j+\ell} - \beta_j} \pmod{N} \]
-
+    \note[item]{
+        Nowadays functions with better mixing used
+        \item The $\gcd$ condition in pratice almost always true
+    }
 \end{frame}
 
 \subsection{Pairings}
@@ -612,6 +687,10 @@ keys]{ cryptocode }
             \[ e(T, T) = 1 \]
             
         \end{itemize}
+        \note[item]{
+            The alternating not strictly in definition
+            \item Generalised with three groups
+        }
     \end{definition}
 \end{frame}
 
@@ -628,7 +707,9 @@ keys]{ cryptocode }
         \langle P, Q \rangle &= e_m(S, \phi(Q))
     \end{align*}
     For $\phi: E \to E$ a distorsion map
-
+    \note[item]{
+        Not every curve has distorsion maps
+    }
 \end{frame}
 
 \begin{frame}
@@ -721,7 +802,10 @@ keys]{ cryptocode }
     If it is a Frobenius followed by an isomorphisms, it is purely inseparable.
     \pause
     We are mostly  concerned with the separable case.
-
+    \note[item]{
+        Frobenius are very important
+        \item In our case they are a bit of a nuisance for a theorem later on
+    }
 \end{frame}
 
 \begin{frame}
@@ -785,7 +869,9 @@ keys]{ cryptocode }
         \item<5-> Insecure for DLP
         \item<6-> Secure for CSSI (later)!
     \end{itemize}
-    
+    \note[item]{
+        Endomorphism ring is a order in a quaternion algebra
+    }
 
 \end{frame}
 
@@ -811,16 +897,19 @@ keys]{ cryptocode }
     \begin{center}
         \includegraphics[width=28em]{isogeny_graph.PNG}
     \end{center}
+    \note[item]{
+        CSIDH is pronounced Seaside
+    }
 \end{frame}
 
 \begin{frame}
     \frametitle{Isogeny Graphs}
-    Let $p, \ell$ be a primes.
+    Let $p, \ell$ be a primes, $K$ a field of characteristic $p$.
     \pause
     \begin{definition}
         The $\ell$\textbf{-supersingular isogeny graph} has as:
         \begin{itemize}
-            \item<2-> Vertices: Supersingular Elliptic curves over $\overline{\FF}_p$
+            \item<2-> Vertices: Supersingular Elliptic curves over $K$
             \item<3-> Edges: Separable isogenies from $E \to E'$
         \end{itemize}
         \onslide{4-}{
@@ -884,12 +973,16 @@ keys]{ cryptocode }
 \end{tikzpicture}
 \end{center}
 Details will follow
+\note[item]{
+    Alice computes the left to right ones
+    \item Bob computes the down arrows
+}
 \end{frame}
 
 \begin{frame}
     \frametitle{SIDH}
     Parties select $p = 2^{e_A} 3^{e_B} - 1$ prime,
-    \pause a supersingular starting curve $E/\overline{\FF}_{p^2}$,
+    \pause a supersingular starting curve $E/\FF_{p^2}$,
     \pause four points $P_A, P_B, Q_A, Q_B$ s.t.
     $\langle P_A, Q_A \rangle = E[2^{e_A}], \langle P_B, Q_B \rangle = E[3^{e_B}]$.
     \begin{itemize}
@@ -920,7 +1013,7 @@ Details will follow
     Best attack is on CSSI problem.
     \pause 
     Suppose we want to find an $\ell^a$-isogeny  between $E_0 \to E_1$, both 
-    supersingular over $\overbar{\FF}_p$.
+    supersingular and over $\FF_{p^2}$.
     \pause Let $k \approx a/2$ and
     \begin{align*}
         S_{i, k} &\coloneqq \set{ H \leq E_i[\ell^k] \mid \; H \text{ cyclic}, |H| = \ell^k } \\
