@@ -813,12 +813,12 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{Isogeny Graphs}
-    Let $p, \ell$ be a primes.
+    Let $p, \ell$ be a primes, K a field of characteristic $p$. 
     
     \begin{definition}
         The $\ell$\textbf{-supersingular isogeny graph} has as:
         \begin{itemize}
-            \item Vertices: Supersingular Elliptic curves over $\overline{\FF}_p$
+            \item Vertices: Supersingular Elliptic curves over $K$
             \item Edges: Separable isogenies from $E \to E'$
         \end{itemize}
 
@@ -887,7 +887,7 @@ Details will follow
 \begin{frame}
     \frametitle{SIDH}
     Parties select $p = 2^{e_A} 3^{e_B} - 1$ prime,
-     a supersingular starting curve $E/\overline{\FF}_{p^2}$,
+     a supersingular starting curve $E/\FF_{p^2}$,
      four points $P_A, P_B, Q_A, Q_B$ s.t.
     $\langle P_A, Q_A \rangle = E[2^{e_A}], \langle P_B, Q_B \rangle = E[3^{e_B}]$.
     \begin{itemize}
@@ -918,7 +918,7 @@ Details will follow
     Best attack is on CSSI problem.
      
     Suppose we want to find an $\ell^a$-isogeny  between $E_0 \to E_1$, both 
-    supersingular over $\overbar{\FF}_p$.
+    supersingular over $\FF_{p^2}$.
      Let $k \approx a/2$ and
     \begin{align*}
         S_{i, k} &\coloneqq \set{ H \leq E_i[\ell^k] \mid \; H \text{ cyclic}, |H| = \ell^k } \\
