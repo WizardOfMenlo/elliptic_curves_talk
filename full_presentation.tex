@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
@@ -96,8 +96,19 @@ keys]{ cryptocode }
   };
 }
 
+    \makeatletter
+    \setbeamersize{text margin left=0.75\beamer@leftmargin}
+    \setbeamersize{text margin right=3\beamer@rightmargin}
+    \makeatother
+
+
 \usepackage{tikz}
-\usetikzlibrary{arrows,positioning,intersections}
+\usetikzlibrary{arrows,positioning,intersections,calc}
+
+\newcommand{\forCam}{
+\tikz[remember picture,overlay]
+\fill[red] (current page.south east) rectangle +(-5,3); %adjust this values by trial and errors for fit your camera overlay 
+}
 
 %Information to be included in the title page:
 \title{Elliptic Curve Cryptography}
@@ -114,6 +125,7 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{Motivation}
+    
     \begin{aquote}{Serge Lang}
     It is possible to write endlessly on elliptic curves. \\ (This is not a threat.)
     \end{aquote}
@@ -190,7 +202,7 @@ keys]{ cryptocode }
     \pause
     These are rational points on a conic. 
     \begin{itemize}
-        \item Given a rational point, all of them can be found geometrically
+        \item Given a rational point, find all geometrically
         \item Hasse principle allows us to test if a rational point exists
     \end{itemize}
     \note[item]{
@@ -236,7 +248,7 @@ keys]{ cryptocode }
         \end{itemize}
     \end{definition}
     \pause
-    Informally, we can add, subtract, multiply and divide non zero elements.
+    Informally, we can add, subtract, multiply and divide.
 \end{frame}
 
 \begin{frame}
@@ -299,7 +311,7 @@ keys]{ cryptocode }
         &\disponslide{3-}{\bigg\downarrow \; \mathrm{char}(K) \neq 2, 3} \\
         \disponslide{3-}{y^2 = x^3 }&\disponslide{3-}{+ a x + b}
     \end{align*}
-    \onslide{4-}{Much easier to manage!}
+    \onslide<4->{Much easier to manage!}
     \note[item]{
         Weierstrass most common (academically)
         \item Other models exist
@@ -320,7 +332,8 @@ keys]{ cryptocode }
         \[ E(K) = \set{(x, y) \in K \times K \mid y^2 = x^3 + a x + b } \cup \set{ \infty } \]
     \end{definition}
     \pause
-    Mathematicians are often interested with $E(\QQ) \subseteq E(\mathbb{R}) \subseteq E(\mathbb{C})$ but we mostly consider the finite case.
+    Mathematicians often interested with $E(\QQ) \subseteq E(\mathbb{R}) \subseteq E(\mathbb{C})$ \\
+    We mostly consider the finite case.
     \note[item]{
         Projective closure
         \item Point at infinity correspond to $(0: 1: 0)$
@@ -452,7 +465,7 @@ keys]{ cryptocode }
         A curve is \textbf{singular} if $\Delta = 0$.
    \end{definition}
    \pause
-    Alternatively, let $E: y^2 = f(x)$, and let $x_1, x_2, x_3$ be the roots of $f$. 
+    Alternatively, let $E: y^2 = f(x)$, and let $x_1, x_2, x_3$ be $f$'s roots. 
     \[ \Delta = (x_1 - x_2)^2(x_2 - x_3)^2(x_3 - x_1)^2 \]
     i.e. $\Delta = 0 \iff f$ has a repeated root.
 
@@ -529,7 +542,7 @@ keys]{ cryptocode }
         \[ \left|\#E(\FF_q) - q - 1\right| \leq 2 \sqrt{q} \] 
     \end{theorem}
     \pause
-    Exact value can be efficiently found using Schoof's algorithm in $O((\log q)^8)$.
+    Can be efficiently found using Schoof's algorithm in $O((\log q)^8)$.
     \note[item]{
         Each value of $x$ yields at most two of $y$
         \item a random element has 50\% of being quadratic residue
@@ -568,7 +581,8 @@ keys]{ cryptocode }
     \[ \mathrm{DDH} \leq_R \mathrm{CDH} \leq_R \mathrm{DLP} \]}
 
     \onslide<6->{
-    \textbf{Representation matters}! $\ZZ_{p-1} \cong \ZZ^*_p$ as groups but the discrete logarithm is trivial in the former, assumed hard in the latter. }
+    \textbf{Representation matters}! $\ZZ_{p-1} \cong \ZZ^*_p$ as groups \\ 
+    Discrete logarithm trivial in one, assumed hard in other. }
     \note[item]{
         In fact in some groups CDH and DLP are equivalent
         \item Check $e(g^x, g^y) = e(g, g^z)$
@@ -613,7 +627,7 @@ keys]{ cryptocode }
     }
     \pause
     Correctness follows since:
-    \[ K = [x]Q_B = [x][y]P = [xy]P = [y][x]P = [y]Q_A = K \]
+    \[ K = [x]Q_B = [x][y]P = [y][x]P = [y]Q_A = K \]
     \note[item]{
         Need to check received points are on curve
         \item Invalid points attacks
@@ -742,7 +756,7 @@ keys]{ cryptocode }
     \end{center}
     \pause
     Correctness by:
-    \[ e(\sigma, P) = e([x]Q, P) = e(Q, P)^x = e(Q, [x]P) = e(H(m), [x]P) \]
+    \[ e(\sigma, P) = e([x]Q, P) = e(Q, [x]P) = e(H(m), [x]P) \]
  
 \end{frame}
 
@@ -768,8 +782,8 @@ keys]{ cryptocode }
         If $\phi(E_1) \neq \set{\infty}$, $E_1$ is \textbf{isogenous} to $E_2$.
     \end{definition}
     \pause
-    For example, the curves $y^2 = x^3 + x$ and $y^2 = x^3 - 3x + 3$ are isogenous over $\FF_{71}$ via the isogeny 
-    \[ (x, y) \mapsto \left(\frac{x^3 - 4 x^2 + 30 x -12}{(x - 2)^2}, y\cdot\frac{x^3 - 6x^2 -14x + 35}{(x - 2)^3} \right)\]
+    For example, the curves $y^2 = x^3 + x$ and $y^2 = x^3 - 3x + 3$ are isogenous over $\FF_{71}$ via the isogeny that maps $(x, y) \mapsto$ 
+    \[ \left(\frac{x^3 - 4 x^2 + 30 x -12}{(x - 2)^2}, y\cdot\frac{x^3 - 6x^2 -14x + 35}{(x - 2)^3} \right)\]
 \end{frame}
 
 \begin{frame}
@@ -798,8 +812,8 @@ keys]{ cryptocode }
         Note if $k = \FF_{p^r}$ then $E^{(p^r)} = E$
     \end{definition}
     \pause
-    If an isogeny factors trough a Frobenius isogeny it is inseparable. 
-    If it is a Frobenius followed by an isomorphisms, it is purely inseparable.
+    If an isogeny factors trough a Frobenius isogeny it is inseparable. \\
+    If it is Frobenius + isomorphism it is purely inseparable. \\
     \pause
     We are mostly  concerned with the separable case.
     \note[item]{
@@ -818,9 +832,10 @@ keys]{ cryptocode }
 
     \end{theorem}
     \pause
-       Let $E/k$, with $k$ a finite field. For any subgroup $H \leq E$ we can find an 
-       isogeny with kernel $H$ in $\Theta(\#H)$ using Velu's formulas. We denote the target of 
-       that isogeny by $E/H$
+       Let $E/k$, with $k$ a finite field. \\ 
+       For any subgroup $H \leq E$ we can find an 
+       isogeny of kernel $H$ in $\Theta(\#H)$ by Velu's formulas. \\ 
+       We denote the target of that isogeny by $E/H$
     
 \end{frame}
 
@@ -831,7 +846,7 @@ keys]{ cryptocode }
         \item<2-> Decompose $\ell^k$ isogenies in $k$ $\ell$-isogenies
         \item<3-> Speedup from $\Theta(\ell^k)$ to $\Theta(k^2 \ell)$
     \end{itemize}
-    \onslide{4-}{
+    \onslide<4->{
     Take $H \cong \ZZ_{\ell^k}$. Set $\ker \psi_i = [\ell^{k - i}](\psi_{i-1} \circ \dots \circ \psi_1)(H)$. 
     Then $\mathrm{deg}(\psi_i) = \ell$ and 
 
@@ -912,7 +927,7 @@ keys]{ cryptocode }
             \item<2-> Vertices: Supersingular Elliptic curves over $K$
             \item<3-> Edges: Separable isogenies from $E \to E'$
         \end{itemize}
-        \onslide{4-}{
+        \onslide<4->{
         Both up to isomorphisms (i.e. vertices are $j$-invariants)}
     \end{definition}
     \begin{itemize}

@@ -151,7 +151,7 @@ keys]{ cryptocode }
 
 \begin{frame}
     \frametitle{One variable}
-    \[ a_n x^n + a_{n-1} x^{n-1} + \dots a_1 x + a = 0 \]
+    \[ a_n x^n + a_{n-1} x^{n-1} + \dots a_1 x + a_0 = 0 \]
     
     Quite easy! We can show that:
     \begin{theorem}
@@ -235,7 +235,7 @@ keys]{ cryptocode }
 \begin{frame}
     \frametitle{Characteristic}
     For any field, $\mathrm{char}(\FF)$ is the least integer\footnote{Or $\infty$ if no such integer exists} $\ell$ such that 
-    \[ \underbrace{1 + \dots 1}_{\ell \text{ times}} = 0 \]
+    \[ \underbrace{1 + \dots + 1}_{\ell \text{ times}} = 0 \]
     We have that $\mathrm{char}(\FF_{p^n}) = p$. 
 \end{frame}
 
@@ -378,7 +378,7 @@ keys]{ cryptocode }
         \begin{scope}[xshift=7 cm,yshift=0 cm,scale=.50]
           \plotcurveflexible{0}{-1}{0}
         \end{scope}
-        \node[below] at (1.75,-5) {\tiny $y^2 = x^3 - x$};
+        \node[below] at (1.75,-5) {\tiny $y^2 = x^3$};
         \begin{scope}[xshift=1.75 cm,yshift=-3.5 cm,scale=.50]
           \plotcurveflexible{0}{0}{0}
         \end{scope}
@@ -819,7 +819,7 @@ keys]{ cryptocode }
         The $\ell$\textbf{-supersingular isogeny graph} has as:
         \begin{itemize}
             \item Vertices: Supersingular Elliptic curves over $K$
-            \item Edges: Separable isogenies from $E \to E'$
+            \item Edges: Separable $\ell$-isogenies from $E \to E'$
         \end{itemize}
 
         Both up to isomorphisms (i.e. vertices are $j$-invariants)
